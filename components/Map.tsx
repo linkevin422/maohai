@@ -13,6 +13,16 @@ import 'leaflet/dist/leaflet.css';
 import { Category, useLocations } from '@/lib/useLocations';
 import { useText } from '@/lib/getText';
 import SuggestionModal from '@/components/SuggestionModal';
+import { LocateIcon } from 'lucide-react';
+
+function SetMapInstance({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
+  const map = useMap();
+  useEffect(() => {
+    onMapReady(map);
+  }, [map, onMapReady]);
+  return null;
+}
+
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -31,6 +41,19 @@ const customIcons = {
   shop: L.icon({ iconUrl: '/pins/pin_shop.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
   groomer: L.icon({ iconUrl: '/pins/pin_groomer.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
 };
+
+const cities = [
+  { key: 'Taipei', coords: [25.0330, 121.5654] },
+  { key: 'NewTaipei', coords: [25.0169, 121.4628] },
+  { key: 'Taoyuan', coords: [24.9937, 121.3009] },
+  { key: 'Hsinchu', coords: [24.8138, 120.9675] },
+  { key: 'Taichung', coords: [24.1477, 120.6736] },
+  { key: 'Chiayi', coords: [23.4801, 120.4491] },
+  { key: 'Tainan', coords: [22.9999, 120.2269] },
+  { key: 'Kaohsiung', coords: [22.6273, 120.3014] },
+  { key: 'Hualien', coords: [23.9872, 121.6015] },
+  { key: 'Taitung', coords: [22.7583, 121.1444] },
+];
 
 const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'park', 'shop', 'groomer'];
 
@@ -79,20 +102,20 @@ function GPSMarker({ gpsEnabled, setMapCenter }: { gpsEnabled: boolean; setMapCe
   );
 }
 
+
 export default function Map({ selectedCategory, setSelectedCategory }: { selectedCategory: Category; setSelectedCategory: (cat: Category) => void }) {
   const { getText } = useText();
-  const { locations, loading, error, refetch } = useLocations(selectedCategory);
+  const { locations, loading, error } = useLocations(selectedCategory);
 
   const [showPins, setShowPins] = useState(false);
   const [gpsEnabled, setGpsEnabled] = useState(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([25.034, 121.564]);
+  const [mapCenter, setMapCenter] = useState<[number, number]>([23.7, 120.9]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{ id: string; name: string; category: string } | null>(null);
+  const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
 
-  useEffect(() => {
-    setShowPins(false);
-  }, [selectedCategory]);
 
+  useEffect(() => setShowPins(false), [selectedCategory]);
   useEffect(() => {
     if (!loading) {
       const timer = setTimeout(() => setShowPins(true), 50);
@@ -107,16 +130,18 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
 
   return (
     <div className="relative w-full h-full">
-      <div className="absolute z-10 top-3 left-1/2 -translate-x-1/2 w-full max-w-[95%] px-2 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+      {/* Top Control Bar */}
+      <div className="absolute top-0 z-20 w-full px-4 py-3 bg-white/90 backdrop-blur-md shadow-md flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+        {/* Category Pills */}
+        <div className="flex gap-2 overflow-x-auto scroll-smooth scrollbar-hide sm:flex-wrap sm:justify-start">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
+              className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 selectedCategory === cat
                   ? 'bg-green-600 text-white border-green-700'
-                  : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100'
+                  : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
               }`}
             >
               {getText(`map_category_${cat}`)}
@@ -124,18 +149,49 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
           ))}
         </div>
 
-        <div className="flex items-center gap-2 ml-2">
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" className="sr-only peer" checked={gpsEnabled} onChange={() => setGpsEnabled(!gpsEnabled)} />
-            <div className="w-11 h-6 bg-gray-400 peer-checked:bg-blue-500 rounded-full transition-colors duration-300" />
-            <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-5" />
-          </label>
-          <span className="text-sm text-black">{getText('map_toggle_gps')}</span>
-        </div>
+        {/* City Selector */}
+        <select
+  className="text-sm text-gray-700 border border-gray-300 rounded-full px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+  onChange={(e) => {
+    const coords = JSON.parse(e.target.value);
+    if (mapInstance) {
+      mapInstance.flyTo(coords, 13, { duration: 1.2 });
+    }
+  }}
+  defaultValue=""
+>
+  <option value="" disabled className="text-gray-400">
+    {getText('map_jump_city')}
+  </option>
+  {cities.map((city) => (
+    <option key={city.key} value={JSON.stringify(city.coords)}>
+      {getText(`city_${city.key}`)}
+    </option>
+  ))}
+</select>
+        {/* GPS Toggle */}
+        <button
+          onClick={() => setGpsEnabled(!gpsEnabled)}
+          className={`ml-auto sm:ml-0 px-3 py-1.5 rounded-full border text-sm font-medium flex items-center gap-1 transition ${
+            gpsEnabled
+              ? 'bg-blue-600 text-white border-blue-700'
+              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+          }`}
+        >
+          <LocateIcon size={16} />
+          {getText('map_toggle_gps')}
+        </button>
       </div>
 
-      <MapContainer center={mapCenter} zoom={15} scrollWheelZoom className="w-full h-full z-0">
-        <ForceResize />
+      {/* Map Display */}
+      <MapContainer
+  center={mapCenter}
+  zoom={8}
+  scrollWheelZoom
+  className="w-full h-full z-0"
+>
+  <ForceResize />
+  <SetMapInstance onMapReady={(map) => setMapInstance(map)} />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution="© OpenStreetMap contributors © CARTO"
@@ -176,7 +232,7 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
                   )}
                 </div>
                 {pin.address && <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>}
-                <div className="text-xs text-gray-500 mb-2">🍽️ {getText(`map_category_${pin.category}`)}</div>
+                <div className="text-xs text-gray-500 mb-2">{getText(`map_category_${pin.category}`)}</div>
                 <ul className="text-sm text-gray-800 space-y-1">
                   {Object.entries(pin.data || {}).map(([key, value]) => {
                     const val = value as string | number | boolean;
@@ -203,6 +259,7 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
           ))}
       </MapContainer>
 
+      {/* Suggest Modal */}
       {modalOpen && selectedLocation && (
         <SuggestionModal
           open={modalOpen}

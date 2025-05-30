@@ -335,4 +335,53 @@ mapsubmit_success: {
     "zh-Hant": "✅ 批次送出成功！",
   },
 
+  // Map city jump
+map_jump_city: {
+  en: "Jump to city",
+  "zh-Hant": "快速跳轉城市",
+},
+
+// City names
+city_Taipei: {
+  en: "Taipei",
+  "zh-Hant": "台北",
+},
+city_NewTaipei: {
+  en: "New Taipei",
+  "zh-Hant": "新北",
+},
+city_Taoyuan: {
+  en: "Taoyuan",
+  "zh-Hant": "桃園",
+},
+city_Hsinchu: {
+  en: "Hsinchu",
+  "zh-Hant": "新竹",
+},
+city_Taichung: {
+  en: "Taichung",
+  "zh-Hant": "台中",
+},
+city_Chiayi: {
+  en: "Chiayi",
+  "zh-Hant": "嘉義",
+},
+city_Tainan: {
+  en: "Tainan",
+  "zh-Hant": "台南",
+},
+city_Kaohsiung: {
+  en: "Kaohsiung",
+  "zh-Hant": "高雄",
+},
+city_Hualien: {
+  en: "Hualien",
+  "zh-Hant": "花蓮",
+},
+city_Taitung: {
+  en: "Taitung",
+  "zh-Hant": "台東",
+},
+
+
 };
