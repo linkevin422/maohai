@@ -1,27 +1,34 @@
-'use client';
+"use client";
 
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { useLanguage } from '@/lib/LanguageProvider';
-import { getText } from '@/lib/getText';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useText } from "@/lib/getText";
+import { motion } from "framer-motion";
 
 export default function HomePage() {
-  const { lang } = useLanguage();
+  const { getText } = useText();
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
       <Header />
-      <main className="pt-28 pb-20 min-h-screen bg-gradient-to-br from-zinc-900 via-black to-zinc-800 text-white flex flex-col items-center justify-center px-6">
-        <h1 className="text-5xl font-extrabold mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 text-transparent bg-clip-text drop-shadow">
-          {getText("home_title", lang)}
-        </h1>
-        <p className="text-lg text-gray-300 mb-10">{getText("home_subtitle", lang)}</p>
 
-        <div className="bg-yellow-300 text-red-600 p-6 rounded-xl shadow-xl text-xl font-bold">
-          If you see this, Tailwind is fully working.
-        </div>
+      <main className="flex flex-1 items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            {getText("home_hero_title")}
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto">
+            {getText("home_hero_subtitle")}
+          </p>
+        </motion.div>
       </main>
+
       <Footer />
-    </>
+    </div>
   );
 }

@@ -3,18 +3,19 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-export type Category = "restaurant" | "vet" | "hotel" | "human_hotel" | "park" | "shop";
+export type Category = "restaurant" | "vet" | "hotel" | "human_hotel" | "park" | "shop" | "groomer";
 
 export type Location = {
-  id: string;
-  name: string;
-  lat: number;
-  lng: number;
-  category: Category;
-  data: any;
-  address?: string;
-};
-
+    id: string;
+    name: string;
+    lat: number;
+    lng: number;
+    address?: string;
+    category: string;
+    google_maps_url?: string;
+    data?: Record<string, any>;
+  };
+  
 export function useLocations(category: Category) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(false);
