@@ -18,14 +18,15 @@ export default function Header() {
 
   return (
     <header className="w-full fixed top-0 left-0 z-50 bg-black/70 backdrop-blur border-b border-white/10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-4 flex items-center">
         <Link href="/" className="text-2xl font-bold tracking-widest text-white hover:opacity-90 transition">
           MAOHAI
         </Link>
 
+        <div className="flex-1" />
+
         <nav className="flex items-center gap-6 text-sm font-medium">
           <Link href="/about" className="text-white hover:text-purple-300 transition">{getText('header_about')}</Link>
-          <Link href="/map" className="text-white hover:text-purple-300 transition">{getText('header_map')}</Link>
           <Link href="/blog" className="text-white hover:text-purple-300 transition">{getText('header_blog')}</Link>
 
           <div className="relative">
