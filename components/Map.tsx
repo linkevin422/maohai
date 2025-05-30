@@ -13,7 +13,6 @@ import 'leaflet/dist/leaflet.css';
 import { Category, useLocations } from '@/lib/useLocations';
 import { useText } from '@/lib/getText';
 import SuggestionModal from '@/components/SuggestionModal';
-import LocationSubmissionModal from '@/components/LocationSubmissionModal';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -40,23 +39,6 @@ function ForceResize() {
   useEffect(() => {
     setTimeout(() => map.invalidateSize(), 0);
   }, [map]);
-  return null;
-}
-
-function MapClickHandler({ onClick }: { onClick: (lat: number, lng: number) => void }) {
-  const map = useMap();
-
-  useEffect(() => {
-    const handler = (e: L.LeafletMouseEvent) => {
-      onClick(e.latlng.lat, e.latlng.lng);
-    };
-
-    map.on('click', handler);
-    return () => {
-      map.off('click', handler); // ✅ return a void cleanup
-    };
-  }, [map, onClick]);
-
   return null;
 }
 
@@ -106,8 +88,6 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
   const [mapCenter, setMapCenter] = useState<[number, number]>([25.034, 121.564]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{ id: string; name: string; category: string } | null>(null);
-  const [newPin, setNewPin] = useState<{ lat: number; lng: number } | null>(null);
-  const [submitModalOpen, setSubmitModalOpen] = useState(false);
 
   useEffect(() => {
     setShowPins(false);
@@ -159,12 +139,6 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution="© OpenStreetMap contributors © CARTO"
-        />
-        <MapClickHandler
-          onClick={(lat, lng) => {
-            setNewPin({ lat, lng });
-            setSubmitModalOpen(false);
-          }}
         />
         <GPSMarker gpsEnabled={gpsEnabled} setMapCenter={setMapCenter} />
 
@@ -227,19 +201,6 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
               </Popup>
             </Marker>
           ))}
-
-        {newPin && (
-          <Marker position={[newPin.lat, newPin.lng]} icon={customIcons.restaurant_roam}>
-            <Popup>
-              <button
-                onClick={() => setSubmitModalOpen(true)}
-                className="text-blue-600 underline text-sm hover:opacity-80"
-              >
-                {getText('map_popup_add_location')}
-              </button>
-            </Popup>
-          </Marker>
-        )}
       </MapContainer>
 
       {modalOpen && selectedLocation && (
@@ -251,23 +212,6 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
           onClose={() => {
             setModalOpen(false);
             setSelectedLocation(null);
-          }}
-        />
-      )}
-
-      {submitModalOpen && newPin && (
-        <LocationSubmissionModal
-          open={submitModalOpen}
-          lat={newPin.lat}
-          lng={newPin.lng}
-          onClose={() => {
-            setSubmitModalOpen(false);
-            setNewPin(null);
-          }}
-          onSuccess={() => {
-            refetch();
-            setSubmitModalOpen(false);
-            setNewPin(null);
           }}
         />
       )}

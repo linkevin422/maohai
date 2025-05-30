@@ -233,4 +233,106 @@ map_popup_features: {
   "zh-Hant": "地點特色"
 },
 
+//submissions
+
+map_key_petAllowed: {
+  en: "Pets allowed",
+  "zh-Hant": "可帶寵物"
+},
+map_key_limitByWeight: {
+  en: "Weight limit",
+  "zh-Hant": "有限重"
+},
+map_key_additionalFee: {
+  en: "Extra pet fee",
+  "zh-Hant": "需額外付費"
+},
+map_key_offLeashOk: {
+  en: "Off-leash allowed",
+  "zh-Hant": "可不牽繩"
+},
+map_key_fencedArea: {
+  en: "Fenced area",
+  "zh-Hant": "有圍欄"
+},
+
+mapsubmit_title: {
+  en: "Submit New Location",
+  "zh-Hant": "新增地點"
+},
+mapsubmit_url: {
+  en: "Google Maps URL",
+  "zh-Hant": "Google 地圖連結"
+},
+mapsubmit_parse: {
+  en: "Parse",
+  "zh-Hant": "解"
+},
+mapsubmit_name: {
+  en: "Place Name",
+  "zh-Hant": "地點名稱"
+},
+mapsubmit_lat: {
+  en: "Latitude",
+  "zh-Hant": "緯度"
+},
+mapsubmit_lng: {
+  en: "Longitude",
+  "zh-Hant": "經度"
+},
+mapsubmit_category: {
+  en: "Category",
+  "zh-Hant": "類別"
+},
+mapsubmit_fields: {
+  en: "Category Details",
+  "zh-Hant": "類別細節"
+},
+mapsubmit_submit: {
+  en: "Submit Location",
+  "zh-Hant": "送出地點"
+},
+mapsubmit_submitting: {
+  en: "Submitting...",
+  "zh-Hant": "送出中..."
+},
+mapsubmit_success: {
+  en: "Submission successful",
+  "zh-Hant": "成功送出"
+},
+
+  // mapsubmit batch
+  mapsubmit_batch_title: {
+    en: "🚀 Batch Submit",
+    "zh-Hant": "🚀 批次新增",
+  },
+  mapsubmit_batch_category: {
+    en: "Select Category",
+    "zh-Hant": "選擇分類",
+  },
+  mapsubmit_batch_input: {
+    en: "Paste multiple Google Maps URLs",
+    "zh-Hant": "貼上多筆 Google Maps 連結",
+  },
+  mapsubmit_batch_placeholder: {
+    en: "One per line...",
+    "zh-Hant": "每行一筆...",
+  },
+  mapsubmit_batch_parse: {
+    en: "Parse",
+    "zh-Hant": "解析",
+  },
+  mapsubmit_batch_submitting: {
+    en: "Submitting...",
+    "zh-Hant": "提交中...",
+  },
+  mapsubmit_batch_submit: {
+    en: "Submit All",
+    "zh-Hant": "全部送出",
+  },
+  mapsubmit_batch_success: {
+    en: "✅ Batch submitted!",
+    "zh-Hant": "✅ 批次送出成功！",
+  },
+
 };
