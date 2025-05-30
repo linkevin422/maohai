@@ -51,7 +51,12 @@ export const translations: Record<string, { en: string; 'zh-Hant': string }> = {
     "zh-Hant": "建議修改",
   },
 
-  // ===== MAP SIZE =====
+  map_popup_add_location: {
+    en: "Add this location",
+    "zh-Hant": "新增這個地點",
+  },
+
+  // ===== SIZE =====
   map_size_small: {
     en: "small",
     "zh-Hant": "小型",
@@ -205,6 +210,27 @@ button_submit: {
 button_submitting: {
   en: "Submitting...",
   "zh-Hant": "提交中...",
+},
+
+map_popup_submission: {
+  en: "Submit a Location",
+  "zh-Hant": "新增地點"
+},
+input_name: {
+  en: "Place Name",
+  "zh-Hant": "地點名稱"
+},
+input_address_optional: {
+  en: "Address (optional)",
+  "zh-Hant": "地址（可選）"
+},
+input_google_maps_url: {
+  en: "Google Maps URL (optional)",
+  "zh-Hant": "Google 地圖連結（可選）"
+},
+map_popup_features: {
+  en: "Features",
+  "zh-Hant": "地點特色"
 },
 
 };

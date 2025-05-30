@@ -16,12 +16,11 @@ export type Location = {
     data?: Record<string, any>;
   };
   
-export function useLocations(category: Category) {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
+  export function useLocations(category: Category) {
+    const [locations, setLocations] = useState<Location[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+  
     const fetch = async () => {
       setLoading(true);
       setError(null);
@@ -30,19 +29,20 @@ export function useLocations(category: Category) {
         .select("*")
         .eq("category", category)
         .order("created_at", { ascending: false });
-
+  
       if (error) {
         setError(error.message);
         setLocations([]);
       } else {
         setLocations(data || []);
       }
-
+  
       setLoading(false);
     };
-
-    fetch();
-  }, [category]);
-
-  return { locations, loading, error };
-}
+  
+    useEffect(() => {
+      fetch();
+    }, [category]);
+  
+    return { locations, loading, error, refetch: fetch }; // 👈 expose it here
+  }
