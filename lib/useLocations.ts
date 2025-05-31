@@ -6,15 +6,16 @@ import { supabase } from "@/lib/supabase";
 export type Category = "restaurant" | "vet" | "hotel" | "human_hotel" | "park" | "shop" | "groomer";
 
 export type Location = {
-    id: string;
-    name: string;
-    lat: number;
-    lng: number;
-    address?: string;
-    category: string;
-    google_maps_url?: string;
-    data?: Record<string, any>;
-  };
+  id: string;
+  name: string;
+  category: string;
+  lat: number;
+  lng: number;
+  address?: string;
+  data?: Record<string, any>;
+  google_maps_url?: string;
+  click_count?: number; // 👈 add this
+};
   
   export function useLocations(category: Category) {
     const [locations, setLocations] = useState<Location[]>([]);

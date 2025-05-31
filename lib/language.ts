@@ -10,10 +10,69 @@ export const translations: Record<string, { en: string; 'zh-Hant': string }> = {
   },
 
   // ===== HEADER =====
-  header_about: {
-    en: "About",
-    "zh-Hant": "關於",
+
+  auth_remember: {
+    en: "Remember me",
+    "zh-Hant": "記住我",
   },
+  auth_forgot: {
+    en: "Forgot your password?",
+    "zh-Hant": "忘記密碼？",
+  },
+  login_title: {
+    en: "Log in to your account",
+    "zh-Hant": "登入帳號",
+  },  
+
+  auth_error_invalid_credentials: {
+    en: "Oops, wrong email or password!",
+    "zh-Hant": "帳號或密碼打錯了喔！",
+  },
+  auth_error_user_not_found: {
+    en: "No user found with this email.",
+    "zh-Hant": "找不到該帳號，請確認電子郵件是否正確。",
+  },
+  auth_error_email_not_confirmed: {
+    en: "Email not confirmed. Please check your inbox.",
+    "zh-Hant": "請先確認信箱，完成帳號啟用。",
+  },
+  auth_check_spam: {
+    en: "If you didn’t get the email in 5 minutes, check your spam folder.",
+    "zh-Hant": "如果你在五分鐘內沒收到信，請檢查垃圾郵件。",
+  },
+  auth_resend_prompt: {
+    en: "Still no email? Click below to resend.",
+    "zh-Hant": "還是沒收到？點下方按鈕重新發送。",
+  },
+  auth_resend_button: {
+    en: "Resend verification email",
+    "zh-Hant": "重新發送驗證信",
+  },
+  auth_resending: {
+    en: "Resending...",
+    "zh-Hant": "重新發送中...",
+  },
+  auth_resend_success: {
+    en: "Verification email sent again.",
+    "zh-Hant": "驗證信已重新發送。",
+  },  
+  
+
+header_about: {
+  en: "About",
+  "zh-Hant": "關於我們",
+},
+
+header_articles: {
+  en: "Articles",
+  "zh-Hant": "文章",
+},
+
+header_loveyou: {
+  en: "Love You Always",
+  "zh-Hant": "永遠愛你",
+},
+
   header_map: {
     en: "Map",
     "zh-Hant": "地圖",
@@ -22,6 +81,57 @@ export const translations: Record<string, { en: string; 'zh-Hant': string }> = {
     en: "Blog",
     "zh-Hant": "部落格",
   },
+
+  // auth
+auth_register_button: {
+  en: "Register",
+  "zh-Hant": "註冊",
+},
+auth_login_button: {
+  en: "Log In",
+  "zh-Hant": "登入",
+},
+logout_button: {
+  en: "Log Out",
+  "zh-Hant": "登出",
+},
+
+auth_username: {
+  en: "Username",
+  "zh-Hant": "使用者名稱",
+},
+auth_confirm_password: {
+  en: "Confirm Password",
+  "zh-Hant": "確認密碼",
+},
+auth_error_required: {
+  en: "All fields are required.",
+  "zh-Hant": "所有欄位皆為必填。",
+},
+auth_error_mismatch: {
+  en: "Passwords do not match.",
+  "zh-Hant": "密碼不一致。",
+},
+auth_error_banned: {
+  en: "Username contains banned words.",
+  "zh-Hant": "使用者名稱包含不當詞彙。",
+},
+
+auth_error_existing_email: {
+  en: "Email already registered.",
+  "zh-Hant": "此電子郵件已註冊。",
+},
+auth_success_email_sent: {
+  en: "Email sent successfully. Please close this page and confirm your email.",
+  "zh-Hant": "信件已發送，請關閉此頁面並前往信箱確認。",
+},
+
+register_title: {
+  en: "Register Account",
+  "zh-Hant": "註冊帳號",
+},
+
+
 
   // ===== MAP UI TEXT =====
   map_loading: {
@@ -382,6 +492,70 @@ city_Taitung: {
   en: "Taitung",
   "zh-Hant": "台東",
 },
+
+//about
+
+// inside translations.ts
+about_title: {
+  en: "About Maohai",
+  "zh-Hant": "關於毛孩",
+},
+about_description: {
+  en: "Maohai is Taiwan’s warmest pet map and tool platform. Built for real pet parents who treat their companions like family.",
+  "zh-Hant": "毛孩是全台最溫暖的寵物地圖與工具平台，給真正把毛孩當家人的你。",
+},
+about_line1: {
+  en: "Created with love in Taiwan 🇹🇼.",
+  "zh-Hant": "誕生於台灣，滿滿的愛。",
+},
+about_line2: {
+  en: "No ads. No trackers. Just useful tools.",
+  "zh-Hant": "無廣告、無追蹤，只有實用的功能。",
+},
+about_line3: {
+  en: "We believe every paw deserves respect.",
+  "zh-Hant": "我們相信每一隻毛孩都值得被尊重。",
+},
+
+//footer
+
+// footer
+footer_email_placeholder: {
+  en: "Enter your email to subscribe",
+  "zh-Hant": "輸入你的 Email 訂閱最新消息",
+},
+footer_button_subscribe: {
+  en: "Subscribe",
+  "zh-Hant": "訂閱",
+},
+footer_success: {
+  en: "Thanks for subscribing!",
+  "zh-Hant": "感謝訂閱！",
+},
+footer_error: {
+  en: "Subscription failed. Please check your email.",
+  "zh-Hant": "訂閱失敗，請確認 Email 是否正確",
+},
+footer_duplicate: {
+  en: "This email is already subscribed.",
+  "zh-Hant": "這個 Email 已經訂閱過了",
+},
+footer_copyright: {
+  en: "© 2025 Maohai",
+  "zh-Hant": "© 2025 毛孩",
+},
+
+//register
+auth_email: {
+  en: "Email",
+  "zh-Hant": "電子郵件",
+},
+auth_password: {
+  en: "Password",
+  "zh-Hant": "密碼",
+},
+
+
 
 
 };

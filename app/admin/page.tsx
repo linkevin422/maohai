@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -15,6 +15,8 @@ type Suggestion = {
   created_at: string;
 };
 
+const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASS;
+
 export default function AdminPage() {
   const { getText } = useText();
   const [accessGranted, setAccessGranted] = useState(false);
@@ -23,14 +25,8 @@ export default function AdminPage() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const checkAccess = async () => {
-    const res = await fetch("/api/check-admin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: input }),
-    });
-    const data = await res.json();
-    if (data.success) {
+  const checkAccess = () => {
+    if (input === ADMIN_PASS) {
       setAccessGranted(true);
       fetchSuggestions();
     } else {

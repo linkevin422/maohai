@@ -14,6 +14,13 @@ import { Category, useLocations } from '@/lib/useLocations';
 import { useText } from '@/lib/getText';
 import SuggestionModal from '@/components/SuggestionModal';
 import { LocateIcon } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+
+const taiwanBounds: L.LatLngBoundsExpression = [
+  [21.8, 119.3], // Southwest corner
+  [25.5, 122.2], // Northeast corner
+];
+
 
 function SetMapInstance({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
   const map = useMap();
@@ -189,8 +196,12 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
   zoom={8}
   scrollWheelZoom
   className="w-full h-full z-0"
+  maxBounds={taiwanBounds}
+  maxBoundsViscosity={1.0}
+  minZoom={7}
+  maxZoom={18}
 >
-  <ForceResize />
+    <ForceResize />
   <SetMapInstance onMapReady={(map) => setMapInstance(map)} />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -221,40 +232,54 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
                   : customIcons[pin.category as keyof typeof customIcons]
               }
             >
-              <Popup>
-                <div className="font-semibold text-base mb-1">
-                  {pin.google_maps_url ? (
-                    <a href={pin.google_maps_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:opacity-80">
-                      {pin.name}
-                    </a>
-                  ) : (
-                    <span>{pin.name}</span>
-                  )}
-                </div>
-                {pin.address && <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>}
-                <div className="text-xs text-gray-500 mb-2">{getText(`map_category_${pin.category}`)}</div>
-                <ul className="text-sm text-gray-800 space-y-1">
-                  {Object.entries(pin.data || {}).map(([key, value]) => {
-                    const val = value as string | number | boolean;
-                    const isPetSizeKey = key === 'maxPetSize' && typeof val === 'string';
-                    const translatedValue = isPetSizeKey ? getText(`map_size_${val}`) : val;
+<Popup>
+  <div className="font-semibold text-base mb-1">
+    {pin.google_maps_url ? (
+      <a
+  href={pin.google_maps_url}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-blue-600 underline hover:opacity-80"
+  onClick={() => {
+    supabase
+      .from('locations')
+      .update({ click_count: (pin.click_count || 0) + 1 })
+      .eq('id', pin.id);
+  }}
+>
+  {pin.name}
+</a>
+    ) : (
+      <span>{pin.name}</span>
+    )}
+  </div>
+  {pin.address && <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>}
+  <div className="text-xs text-gray-500 mb-2">{getText(`map_category_${pin.category}`)}</div>
+  <ul className="text-sm text-gray-800 space-y-1">
+    {Object.entries(pin.data || {}).map(([key, value]) => {
+      const val = value as string | number | boolean;
+      const isPetSizeKey = key === 'maxPetSize' && typeof val === 'string';
+      const translatedValue = isPetSizeKey ? getText(`map_size_${val}`) : val;
 
-                    return (
-                      <li key={key}>
-                        {typeof val === 'boolean'
-                          ? `${val ? '✅' : '❌'} ${getText(`map_key_${key}`)}`
-                          : `🔹 ${getText(`map_key_${key}`)}: ${translatedValue}`}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <button
-                  onClick={() => openModalWithLocation({ id: pin.id, name: pin.name, category: pin.category })}
-                  className="mt-2 inline-block text-blue-600 underline text-sm hover:opacity-80"
-                >
-                  {getText('map_popup_suggest_edit')}
-                </button>
-              </Popup>
+      return (
+        <li key={key}>
+          {typeof val === 'boolean'
+            ? `${val ? '✅' : '❌'} ${getText(`map_key_${key}`)}`
+            : `🔹 ${getText(`map_key_${key}`)}: ${translatedValue}`}
+        </li>
+      );
+    })}
+  </ul>
+
+  <div className="mt-3">
+  <button
+    onClick={() => openModalWithLocation({ id: pin.id, name: pin.name, category: pin.category })}
+    className="text-blue-600 underline text-xs hover:opacity-80"
+  >
+    {getText('map_popup_suggest_edit')}
+  </button>
+</div>
+</Popup>
             </Marker>
           ))}
       </MapContainer>

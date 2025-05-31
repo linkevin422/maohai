@@ -42,6 +42,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-Hant">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className="bg-zinc-950 text-white min-h-screen font-sans">
         <LanguageProvider>{children}</LanguageProvider>
       </body>
