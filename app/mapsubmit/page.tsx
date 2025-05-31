@@ -4,23 +4,15 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/LanguageProvider';
 import { useText } from '@/lib/getText';
 import { Category } from '@/lib/useLocations';
 import { admins } from '@/lib/admins';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import EditHistoryModal from '@/components/EditHistoryModal';
 
-const categories: Category[] = [
-  'restaurant',
-  'vet',
-  'hotel',
-  'human_hotel',
-  'park',
-  'shop',
-  'groomer',
-];
+const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'park', 'shop', 'groomer'];
 
 const categoryFields: Record<Category, string[]> = {
   restaurant: ['petRoam', 'petBagOnly', 'indoorAllowed', 'outdoorSeating', 'petMenu', 'waterBowlProvided'],
@@ -32,14 +24,24 @@ const categoryFields: Record<Category, string[]> = {
   groomer: ['walkInOk', 'onlineBooking', 'hasParking'],
 };
 
+function isValidGoogleMapsUrl(url: string): boolean {
+  const patterns = [
+    /^https?:\/\/www\.google\.com\/maps\//,
+    /^https?:\/\/maps\.google\.com\//,
+    /^https?:\/\/goo\.gl\/maps\//,
+  ];
+  return patterns.some((regex) => regex.test(url.trim()));
+}
+
 export default function MapSubmitPage() {
-  const { lang, setLang } = useLanguage();
   const { getText } = useText();
+  const { lang } = useLanguage();
   const searchParams = useSearchParams();
-  const supabaseClient = createClientComponentClient();
+  const supabase = createClientComponentClient();
 
   const [user, setUser] = useState<User | null>(null);
   const [url, setUrl] = useState('');
+  const [urlError, setUrlError] = useState('');
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
   const [name, setName] = useState('');
@@ -48,9 +50,12 @@ export default function MapSubmitPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [locationId, setLocationId] = useState<string | null>(null);
+  const [originalName, setOriginalName] = useState('');
+  const [originalUrl, setOriginalUrl] = useState('');
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   useEffect(() => {
-    supabaseClient.auth.getUser().then(({ data }) => setUser(data.user ?? null));
+    supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null));
   }, []);
 
   useEffect(() => {
@@ -69,9 +74,11 @@ export default function MapSubmitPage() {
         .then(({ data, error }) => {
           if (error || !data) return;
           setName(data.name || '');
+          setOriginalName(data.name || '');
           setLat(data.lat?.toString() || '');
           setLng(data.lng?.toString() || '');
           setUrl(data.google_maps_url || '');
+          setOriginalUrl(data.google_maps_url || '');
           setCategory(data.category || 'restaurant');
           setFieldData(data.data || {});
         });
@@ -102,7 +109,7 @@ export default function MapSubmitPage() {
       if (nameMatch) {
         setName(nameMatch[1].replace(/\+/g, ' '));
       }
-    } catch (e) {
+    } catch {
       alert('Invalid URL');
     }
   };
@@ -112,6 +119,13 @@ export default function MapSubmitPage() {
   };
 
   const handleSubmit = async () => {
+    if (!isValidGoogleMapsUrl(url)) {
+      setUrlError(getText('mapsubmit_invalid_url'));
+      return;
+    } else {
+      setUrlError('');
+    }
+
     setSubmitting(true);
 
     const payload = {
@@ -125,24 +139,43 @@ export default function MapSubmitPage() {
 
     const { error } = await supabase.rpc('upsert_location', payload);
 
-    if (!error && user) {
-      // refetch the location based on rounded lat/lng
-      const { data: match } = await supabase
-        .from('locations')
-        .select('id')
-        .eq('lat', parseFloat(lat).toFixed(5))
-        .eq('lng', parseFloat(lng).toFixed(5))
-        .single();
-    
-      if (match?.id) {
-        await supabase.from('location_edits').insert({
-          location_id: match.id,
-          user_id: user.id,
-          edited_fields: fieldData,
-        });
+    const { data: fetch } = await supabase
+      .from('locations')
+      .select('id')
+      .eq('name', name)
+      .eq('lat', parseFloat(lat))
+      .eq('lng', parseFloat(lng))
+      .maybeSingle();
+
+    const resolvedId = locationId || fetch?.id;
+    if (!locationId && fetch?.id) setLocationId(fetch.id);
+
+    if (!error && user && resolvedId) {
+      const editLog: Record<string, any> = { ...fieldData };
+
+      if (originalName !== name) {
+        editLog.name = { before: originalName, after: name };
+      }
+
+      if (originalUrl !== url) {
+        editLog.url = { before: originalUrl, after: url };
+      }
+
+      const { error: insertError } = await supabase.from('location_edits').insert({
+        location_id: resolvedId,
+        user_id: user.id,
+        edited_fields: editLog,
+        name,
+        url,
+      });
+
+      if (insertError) {
+        alert('❌ Failed to log edit:\n' + insertError.message);
+      } else {
+        alert('✅ Edit log inserted');
       }
     }
-    
+
     setSubmitting(false);
 
     if (!error) {
@@ -153,7 +186,6 @@ export default function MapSubmitPage() {
       setLng('');
       setFieldData({});
     } else {
-      console.error('RPC error:', error);
       alert('Submit failed');
     }
   };
@@ -162,10 +194,8 @@ export default function MapSubmitPage() {
     return (
       <>
         <Header />
-        <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
-        <p>
-  {Math.random() < 0.5 ? getText('unauthorized_meow') : getText('unauthorized_woof')}
-</p>
+        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 pt-24">
+          <p>{getText('unauthorized_meow')}</p>
         </div>
         <Footer />
       </>
@@ -175,95 +205,115 @@ export default function MapSubmitPage() {
   return (
     <>
       <Header />
-      <div className="pt-[64px] min-h-screen bg-black text-white p-6 max-w-2xl mx-auto pb-32 space-y-12">
-        <h1 className="text-2xl font-bold mb-4">📍 {getText('mapsubmit_title')}</h1>
+      <div className="bg-black text-white px-4 sm:px-6 md:px-8 pt-24 pb-32 max-w-2xl mx-auto space-y-10">
+        <h1 className="text-xl sm:text-2xl font-bold">{getText('mapsubmit_title')}</h1>
 
-        <label className="block text-sm mb-1">{getText('mapsubmit_url')}</label>
-        <div className="flex gap-2 mb-4">
+        <div className="space-y-4">
+        <label className="block text-sm mb-1">{getText('mapsubmit_lat')}</label>
+        <div className="flex gap-2">
+            <input
+              className="flex-1 px-3 py-2 text-black rounded"
+              type="text"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <button
+              onClick={extractFromUrl}
+              type="button"
+              className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
+            >
+              {getText('mapsubmit_parse')}
+            </button>
+          </div>
+          {urlError && <div className="text-red-500 text-sm">{urlError}</div>}
+
+          <label className="block text-sm">{getText('mapsubmit_name')}</label>
           <input
             className="w-full px-3 py-2 text-black rounded"
             type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
-          <button
-            onClick={extractFromUrl}
-            type="button"
-            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
-          >
-            {getText('mapsubmit_parse')}
-          </button>
-        </div>
 
-        <label className="block text-sm mb-1">{getText('mapsubmit_name')}</label>
-        <input
-          className="w-full px-3 py-2 text-black rounded mb-4"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <div className="flex gap-4 mb-4">
-          <div className="flex-1">
-            <label className="block text-sm mb-1">{getText('mapsubmit_lat')}</label>
-            <input
-              className="w-full px-3 py-2 text-black rounded"
-              type="text"
-              value={lat}
-              onChange={(e) => setLat(e.target.value)}
-            />
-          </div>
-          <div className="flex-1">
-            <label className="block text-sm mb-1">{getText('mapsubmit_lng')}</label>
-            <input
-              className="w-full px-3 py-2 text-black rounded"
-              type="text"
-              value={lng}
-              onChange={(e) => setLng(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <label className="block text-sm mb-1">{getText('mapsubmit_category')}</label>
-        <select
-          className="w-full px-3 py-2 text-black rounded mb-4"
-          value={category}
-          onChange={(e) => setCategory(e.target.value as Category)}
-        >
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {getText(`map_category_${cat}`)}
-            </option>
-          ))}
-        </select>
-
-        {categoryFields[category]?.length > 0 && (
-          <div className="mb-4">
-            <label className="block text-sm mb-2">{getText('mapsubmit_fields')}</label>
-            <div className="grid grid-cols-2 gap-2">
-              {categoryFields[category].map((key) => (
-                <label key={key} className="inline-flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={fieldData[key] || false}
-                    onChange={() => toggleField(key)}
-                  />
-                  <span>{getText(`map_key_${key}`)}</span>
-                </label>
-              ))}
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label className="block text-sm">{getText('mapsubmit_lat')}</label>
+              <input
+                className="w-full px-3 py-2 text-black rounded"
+                type="text"
+                value={lat}
+                onChange={(e) => setLat(e.target.value)}
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm">{getText('mapsubmit_lng')}</label>
+              <input
+                className="w-full px-3 py-2 text-black rounded"
+                type="text"
+                value={lng}
+                onChange={(e) => setLng(e.target.value)}
+              />
             </div>
           </div>
-        )}
 
-        <button
-          onClick={handleSubmit}
-          disabled={submitting}
-          className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold"
-        >
-          {submitting ? getText('mapsubmit_submitting') : getText('mapsubmit_submit')}
-        </button>
+          <label className="block text-sm">{getText('mapsubmit_category')}</label>
+          <select
+            className="w-full px-3 py-2 text-black rounded"
+            value={category}
+            onChange={(e) => setCategory(e.target.value as Category)}
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {getText(`map_category_${cat}`)}
+              </option>
+            ))}
+          </select>
 
-        {success && <div className="text-green-400 mt-4">✅ {getText('mapsubmit_success')}</div>}
+          {categoryFields[category]?.length > 0 && (
+            <div>
+              <label className="block text-sm mb-2">{getText('mapsubmit_fields')}</label>
+              <div className="grid grid-cols-2 gap-2">
+                {categoryFields[category].map((key) => (
+                  <label key={key} className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={fieldData[key] || false}
+                      onChange={() => toggleField(key)}
+                    />
+                    <span>{getText(`map_key_${key}`)}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <button
+            onClick={handleSubmit}
+            disabled={submitting}
+            className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold"
+          >
+            {submitting ? getText('mapsubmit_submitting') : getText('mapsubmit_submit')}
+          </button>
+
+          {success && <div className="text-green-400 mt-2">✅ {getText('mapsubmit_success')}</div>}
+
+          {locationId && (
+            <div className="text-center pt-6">
+              <button
+                onClick={() => setHistoryOpen(true)}
+                className="text-xs text-gray-400 underline hover:text-white"
+              >
+                {getText('mapsubmit_change_log')}
+              </button>
+
+              <EditHistoryModal
+                locationId={locationId}
+                open={historyOpen}
+                onClose={() => setHistoryOpen(false)}
+              />
+            </div>
+          )}
+        </div>
       </div>
       <Footer />
     </>

@@ -375,8 +375,8 @@ mapsubmit_url: {
   "zh-Hant": "Google 地圖連結"
 },
 mapsubmit_parse: {
-  en: "Parse",
-  "zh-Hant": "解"
+  en: "Extract",
+  "zh-Hant": "自動輸入"
 },
 mapsubmit_name: {
   en: "Place Name",
@@ -412,10 +412,24 @@ mapsubmit_success: {
 },
 
   // mapsubmit batch
-  mapsubmit_batch_title: {
-    en: "🚀 Batch Submit",
-    "zh-Hant": "🚀 批次新增",
+
+
+  
+  mapsubmit_invalid_url: {
+    en: "Only Google Maps links are allowed",
+    "zh-Hant": "只能輸入 Google 地圖連結",
   },
+  
+  field_url: {
+    en: "Map Link",
+    "zh-Hant": "地圖連結",
+  },
+  
+  field_name: {
+    en: "Name",
+    "zh-Hant": "名稱",
+  },
+  
   mapsubmit_batch_category: {
     en: "Select Category",
     "zh-Hant": "選擇分類",
@@ -563,7 +577,28 @@ auth_password: {
 "unauthorized_woof": {
   "en": "Woof...",
   "zh-Hant": "汪汪..."
-}
+},
+"mapsubmit_change_log": {
+  "en": "View Change Log",
+  "zh-Hant": "查看變更紀錄"
+},
+
+//edit history
+
+mapsubmit_loading: {
+  en: "Loading...",
+  "zh-Hant": "載入中...",
+},
+
+mapsubmit_no_edits: {
+  en: "No changes recorded yet.",
+  "zh-Hant": "尚未有任何變更紀錄。",
+},
+
+mapsubmit_close: {
+  en: "Close",
+  "zh-Hant": "關閉",
+},
 
 
 
