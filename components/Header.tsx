@@ -70,11 +70,14 @@ export default function Header() {
   const username = user?.user_metadata?.username;
 
   return (
-    <header className="w-full fixed top-0 left-0 z-50 bg-black/70 backdrop-blur border-b border-white/10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-4 flex items-center">
-        <Link href="/" className="text-2xl font-bold tracking-widest text-white hover:opacity-90 transition">
-          MAOHAI
-        </Link>
+<header className="w-full fixed top-0 left-0 z-50 bg-black border-b border-white/10">
+<div className="w-full px-2 sm:px-4 py-4 flex items-center justify-between">
+<Link href="/" className="flex items-baseline gap-1 group text-white hover:opacity-90 transition">
+  <span className="text-2xl font-bold">毛孩</span>
+  <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-white/50 group-hover:text-white/80 transition">
+    maohai.tw
+  </span>
+</Link>
 
         <div className="flex-1" />
 

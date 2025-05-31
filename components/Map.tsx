@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import SafeMapContainer from '@/components/SafeMapContainer';
 import {
-  MapContainer,
   TileLayer,
   Marker,
   Popup,
@@ -12,15 +12,16 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Category, useLocations } from '@/lib/useLocations';
 import { useText } from '@/lib/getText';
-import SuggestionModal from '@/components/SuggestionModal';
 import { LocateIcon } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
 
 const taiwanBounds: L.LatLngBoundsExpression = [
-  [21.8, 119.3], // Southwest corner
-  [25.5, 122.2], // Northeast corner
+  [21.5, 118.8], // extend west & south
+  [26.8, 123.2], // extend north & east
 ];
-
 
 function SetMapInstance({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
   const map = useMap();
@@ -30,7 +31,6 @@ function SetMapInstance({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
   return null;
 }
 
-
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -39,18 +39,58 @@ L.Icon.Default.mergeOptions({
 });
 
 const customIcons = {
-  restaurant_roam: L.icon({ iconUrl: '/pins/pin_res.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
-  restaurant_bagged: L.icon({ iconUrl: '/pins/pin_resbagged.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
-  vet: L.icon({ iconUrl: '/pins/pin_hospital.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
-  hotel: L.icon({ iconUrl: '/pins/pin_pethotel.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
-  human_hotel: L.icon({ iconUrl: '/pins/pin_humanhotel.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
-  park: L.icon({ iconUrl: '/pins/pin_park.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
-  shop: L.icon({ iconUrl: '/pins/pin_shop.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
-  groomer: L.icon({ iconUrl: '/pins/pin_groomer.png', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] }),
+  restaurant_roam: L.icon({
+    iconUrl: '/pins/pin_res.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
+  restaurant_bagged: L.icon({
+    iconUrl: '/pins/pin_resbagged.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
+  vet: L.icon({
+    iconUrl: '/pins/pin_hospital.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
+  hotel: L.icon({
+    iconUrl: '/pins/pin_pethotel.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
+  human_hotel: L.icon({
+    iconUrl: '/pins/pin_humanhotel.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
+  park: L.icon({
+    iconUrl: '/pins/pin_park.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
+  shop: L.icon({
+    iconUrl: '/pins/pin_shop.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
+  groomer: L.icon({
+    iconUrl: '/pins/pin_groomer.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
 };
 
 const cities = [
-  { key: 'Taipei', coords: [25.0330, 121.5654] },
+  { key: 'Taipei', coords: [25.033, 121.5654] },
   { key: 'NewTaipei', coords: [25.0169, 121.4628] },
   { key: 'Taoyuan', coords: [24.9937, 121.3009] },
   { key: 'Hsinchu', coords: [24.8138, 120.9675] },
@@ -62,7 +102,15 @@ const cities = [
   { key: 'Taitung', coords: [22.7583, 121.1444] },
 ];
 
-const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'park', 'shop', 'groomer'];
+const categories: Category[] = [
+  'restaurant',
+  'vet',
+  'hotel',
+  'human_hotel',
+  'park',
+  'shop',
+  'groomer',
+];
 
 function ForceResize() {
   const map = useMap();
@@ -72,7 +120,13 @@ function ForceResize() {
   return null;
 }
 
-function GPSMarker({ gpsEnabled, setMapCenter }: { gpsEnabled: boolean; setMapCenter: (coords: [number, number]) => void }) {
+function GPSMarker({
+  gpsEnabled,
+  setMapCenter,
+}: {
+  gpsEnabled: boolean;
+  setMapCenter: (coords: [number, number]) => void;
+}) {
   const map = useMap();
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [visible, setVisible] = useState(false);
@@ -87,7 +141,10 @@ function GPSMarker({ gpsEnabled, setMapCenter }: { gpsEnabled: boolean; setMapCe
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const coords: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+        const coords: [number, number] = [
+          pos.coords.latitude,
+          pos.coords.longitude,
+        ];
         setPosition(coords);
         setMapCenter(coords);
         map.flyTo(coords, 16, { animate: true, duration: 1.5 });
@@ -104,43 +161,53 @@ function GPSMarker({ gpsEnabled, setMapCenter }: { gpsEnabled: boolean; setMapCe
   return (
     <Marker
       position={position}
-      icon={L.icon({ iconUrl: '/pins/pin_here.png', iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32] })}
+      icon={L.icon({
+        iconUrl: '/pins/pin_here.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+      })}
     />
   );
 }
 
-
-export default function Map({ selectedCategory, setSelectedCategory }: { selectedCategory: Category; setSelectedCategory: (cat: Category) => void }) {
+export default function Map({
+  selectedCategory,
+  setSelectedCategory,
+}: {
+  selectedCategory: Category;
+  setSelectedCategory: (cat: Category) => void;
+}) {
   const { getText } = useText();
   const { locations, loading, error } = useLocations(selectedCategory);
+
+  const router = useRouter();
+  const supabaseClient = createClientComponentClient();
+  const [user, setUser] = useState<User | null>(null);
 
   const [showPins, setShowPins] = useState(false);
   const [gpsEnabled, setGpsEnabled] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([23.7, 120.9]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<{ id: string; name: string; category: string } | null>(null);
   const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
 
+  useEffect(() => {
+    supabaseClient.auth.getUser().then(({ data }) => {
+      setUser(data.user ?? null);
+    });
+  }, []);
 
   useEffect(() => setShowPins(false), [selectedCategory]);
   useEffect(() => {
     if (!loading) {
-      const timer = setTimeout(() => setShowPins(true), 50);
-      return () => clearTimeout(timer);
+      const t = setTimeout(() => setShowPins(true), 50);
+      return () => clearTimeout(t);
     }
   }, [loading]);
 
-  const openModalWithLocation = (pin: { id: string; name: string; category: string }) => {
-    setSelectedLocation(pin);
-    setModalOpen(true);
-  };
-
   return (
     <div className="relative w-full h-full">
-      {/* Top Control Bar */}
       <div className="absolute top-0 z-20 w-full px-4 py-3 bg-white/90 backdrop-blur-md shadow-md flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-        {/* Category Pills */}
-        <div className="flex gap-2 overflow-x-auto scroll-smooth scrollbar-hide sm:flex-wrap sm:justify-start">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide sm:flex-wrap sm:justify-start">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -156,27 +223,24 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
           ))}
         </div>
 
-        {/* City Selector */}
         <select
-  className="text-sm text-gray-700 border border-gray-300 rounded-full px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-  onChange={(e) => {
-    const coords = JSON.parse(e.target.value);
-    if (mapInstance) {
-      mapInstance.flyTo(coords, 13, { duration: 1.2 });
-    }
-  }}
-  defaultValue=""
->
-  <option value="" disabled className="text-gray-400">
-    {getText('map_jump_city')}
-  </option>
-  {cities.map((city) => (
-    <option key={city.key} value={JSON.stringify(city.coords)}>
-      {getText(`city_${city.key}`)}
-    </option>
-  ))}
-</select>
-        {/* GPS Toggle */}
+          className="text-sm text-gray-700 border border-gray-300 rounded-full px-3 py-1.5 bg-white shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+          onChange={(e) => {
+            const coords = JSON.parse(e.target.value);
+            mapInstance?.flyTo(coords, 13, { duration: 1.2 });
+          }}
+          defaultValue=""
+        >
+          <option value="" disabled className="text-gray-400">
+            {getText('map_jump_city')}
+          </option>
+          {cities.map((c) => (
+            <option key={c.key} value={JSON.stringify(c.coords)}>
+              {getText(`city_${c.key}`)}
+            </option>
+          ))}
+        </select>
+
         <button
           onClick={() => setGpsEnabled(!gpsEnabled)}
           className={`ml-auto sm:ml-0 px-3 py-1.5 rounded-full border text-sm font-medium flex items-center gap-1 transition ${
@@ -190,23 +254,25 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
         </button>
       </div>
 
-      {/* Map Display */}
-      <MapContainer
+      <SafeMapContainer
   center={mapCenter}
   zoom={8}
-  scrollWheelZoom
+  scrollWheelZoom={true}
+  dragging={true}
   className="w-full h-full z-0"
   maxBounds={taiwanBounds}
-  maxBoundsViscosity={1.0}
-  minZoom={7}
-  maxZoom={18}
+  maxBoundsViscosity={0.3} // make bounds looser
+  minZoom={6}              // allow zooming out more
+  maxZoom={19}             // allow zooming in more
 >
-    <ForceResize />
-  <SetMapInstance onMapReady={(map) => setMapInstance(map)} />
+        <ForceResize />
+        <SetMapInstance onMapReady={setMapInstance} />
+
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution="© OpenStreetMap contributors © CARTO"
         />
+
         <GPSMarker gpsEnabled={gpsEnabled} setMapCenter={setMapCenter} />
 
         {loading && (
@@ -232,71 +298,70 @@ export default function Map({ selectedCategory, setSelectedCategory }: { selecte
                   : customIcons[pin.category as keyof typeof customIcons]
               }
             >
-<Popup>
-  <div className="font-semibold text-base mb-1">
-    {pin.google_maps_url ? (
-      <a
-  href={pin.google_maps_url}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-blue-600 underline hover:opacity-80"
-  onClick={() => {
-    supabase
-      .from('locations')
-      .update({ click_count: (pin.click_count || 0) + 1 })
-      .eq('id', pin.id);
-  }}
->
-  {pin.name}
-</a>
-    ) : (
-      <span>{pin.name}</span>
-    )}
-  </div>
-  {pin.address && <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>}
-  <div className="text-xs text-gray-500 mb-2">{getText(`map_category_${pin.category}`)}</div>
-  <ul className="text-sm text-gray-800 space-y-1">
-    {Object.entries(pin.data || {}).map(([key, value]) => {
-      const val = value as string | number | boolean;
-      const isPetSizeKey = key === 'maxPetSize' && typeof val === 'string';
-      const translatedValue = isPetSizeKey ? getText(`map_size_${val}`) : val;
-
-      return (
-        <li key={key}>
-          {typeof val === 'boolean'
-            ? `${val ? '✅' : '❌'} ${getText(`map_key_${key}`)}`
-            : `🔹 ${getText(`map_key_${key}`)}: ${translatedValue}`}
-        </li>
-      );
-    })}
-  </ul>
-
-  <div className="mt-3">
-  <button
-    onClick={() => openModalWithLocation({ id: pin.id, name: pin.name, category: pin.category })}
-    className="text-blue-600 underline text-xs hover:opacity-80"
-  >
-    {getText('map_popup_suggest_edit')}
-  </button>
-</div>
-</Popup>
+<Popup autoPan={true} autoPanPadding={[20, 100]}>
+<div className="font-semibold text-base mb-1">
+                  {pin.google_maps_url ? (
+                    <a
+                      href={pin.google_maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline hover:opacity-80"
+                      onClick={() => {
+                        supabase
+                          .from('locations')
+                          .update({ click_count: (pin.click_count || 0) + 1 })
+                          .eq('id', pin.id);
+                      }}
+                    >
+                      {pin.name}
+                    </a>
+                  ) : (
+                    <span>{pin.name}</span>
+                  )}
+                </div>
+                {pin.address && (
+                  <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>
+                )}
+                <div className="text-xs text-gray-500 mb-2">
+                  {getText(`map_category_${pin.category}`)}
+                </div>
+                <ul className="text-sm text-gray-800 space-y-1">
+                  {Object.entries(pin.data || {}).map(([k, v]) => {
+                    const val = v as string | number | boolean;
+                    const isPetSizeKey = k === 'maxPetSize' && typeof val === 'string';
+                    const translated = isPetSizeKey ? getText(`map_size_${val}`) : val;
+                    return (
+                      <li key={k}>
+                        {typeof val === 'boolean'
+                          ? `${val ? '✅' : '❌'} ${getText(`map_key_${k}`)}`
+                          : `🔹 ${getText(`map_key_${k}`)}: ${translated}`}
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className="mt-3">
+                  <button
+                    onClick={() => {
+                      if (user) {
+                        const params = new URLSearchParams({
+                          id: pin.id,
+                          name: pin.name,
+                          category: pin.category,
+                        }).toString();
+                        router.push(`/mapsubmit?${params}`);
+                      } else {
+                        router.push('/register');
+                      }
+                    }}
+                    className="text-blue-600 underline text-xs hover:opacity-80"
+                  >
+                    {getText('map_popup_suggest_edit')}
+                  </button>
+                </div>
+              </Popup>
             </Marker>
           ))}
-      </MapContainer>
-
-      {/* Suggest Modal */}
-      {modalOpen && selectedLocation && (
-        <SuggestionModal
-          open={modalOpen}
-          locationId={selectedLocation.id}
-          locationName={selectedLocation.name}
-          locationCategory={selectedLocation.category}
-          onClose={() => {
-            setModalOpen(false);
-            setSelectedLocation(null);
-          }}
-        />
-      )}
+      </SafeMapContainer>
     </div>
   );
 }

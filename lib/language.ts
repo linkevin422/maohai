@@ -555,6 +555,15 @@ auth_password: {
   "zh-Hant": "密碼",
 },
 
+//Loading
+"unauthorized_meow": {
+  "en": "Meow...",
+  "zh-Hant": "喵喵..."
+},
+"unauthorized_woof": {
+  "en": "Woof...",
+  "zh-Hant": "汪汪..."
+}
 
 
 
