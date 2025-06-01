@@ -6,7 +6,19 @@ module.exports = {
     './lib/**/*.{ts,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            img: {
+              borderRadius: '0.5rem',
+              marginTop: '1rem',
+              marginBottom: '1rem',
+            },
+          },
+        },
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };
