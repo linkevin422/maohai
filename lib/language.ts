@@ -600,6 +600,57 @@ mapsubmit_close: {
   "zh-Hant": "關閉",
 },
 
+true: { en: 'Yep', 'zh-Hant': '有' },
+false: { en: 'Naw', 'zh-Hant': '沒有' },
 
+mapsubmit_on: {
+  en: "on",
+  "zh-Hant": "提交於"
+},
+field_mapUrl: {
+  en: "Map link",
+  "zh-Hant": "地圖連結"
+},
+
+field_petMenu: {
+  en: "Pet menu available",
+  "zh-Hant": "提供寵物餐點"
+},
+field_petRoam: {
+  en: "Pet roaming allowed",
+  "zh-Hant": "寵物可自由走動"
+},
+field_petBagOnly: {
+  en: "Pet must be in bag",
+  "zh-Hant": "限寵物袋"
+},
+field_petAmenities: {
+  en: "Pet-friendly facilities",
+  "zh-Hant": "寵物友善設施"
+},
+field_indoorAllowed: {
+  en: "Indoor access allowed",
+  "zh-Hant": "可進室內"
+},
+field_allowLargeDogs: {
+  en: "Large dogs allowed",
+  "zh-Hant": "大型犬可"
+},
+field_outdoorSeating: {
+  en: "Outdoor seating",
+  "zh-Hant": "戶外座位"
+},
+field_petRoomService: {
+  en: "Pet room service",
+  "zh-Hant": "寵物客房服務"
+},
+field_separatePetRooms: {
+  en: "Separate pet rooms",
+  "zh-Hant": "獨立寵物房"
+},
+field_waterBowlProvided: {
+  en: "Water bowl provided",
+  "zh-Hant": "有提供水碗"
+},
 
 };

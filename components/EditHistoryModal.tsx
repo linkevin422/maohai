@@ -13,14 +13,15 @@ type Props = {
 };
 
 type EditLog = {
-  id: string;
-  user_id: string;
-  edited_fields: Record<string, any>;
-  created_at: string;
-  name?: string;
-  url?: string;
-};
-
+    id: string;
+    user_id: string;
+    username?: string;
+    edited_fields: Record<string, any>;
+    created_at: string;
+    name?: string;
+    url?: string;
+  };
+  
 export default function EditHistoryModal({ locationId, open, onClose }: Props) {
   const supabase = createClientComponentClient();
   const { getText } = useText();
@@ -33,11 +34,11 @@ export default function EditHistoryModal({ locationId, open, onClose }: Props) {
     const fetchLogs = async () => {
       setLoading(true);
       const { data, error } = await supabase
-        .from('location_edits')
-        .select('*')
-        .eq('location_id', locationId)
-        .order('created_at', { ascending: false });
-
+      .from('location_edits')
+      .select('id, user_id, username, created_at, edited_fields, name, url')
+      .eq('location_id', locationId)
+      .order('created_at', { ascending: false });
+    
       if (error) {
         console.error('❌ Failed to fetch logs:', error);
         setLogs([]);
@@ -69,8 +70,8 @@ export default function EditHistoryModal({ locationId, open, onClose }: Props) {
               {logs.map((log) => (
                 <li key={log.id} className="border-b pb-4">
                   <div className="text-sm text-gray-500 mb-2">
-                    <span className="font-medium">{log.user_id}</span>{' '}
-                    {getText('mapsubmit_on')}{' '}
+                  <span className="font-medium">{log.username || log.user_id}</span>{' '}
+                  {getText('mapsubmit_on')}{' '}
                     {format(new Date(log.created_at), 'yyyy-MM-dd HH:mm')}
                   </div>
 
@@ -79,21 +80,27 @@ export default function EditHistoryModal({ locationId, open, onClose }: Props) {
                       const label = getText(`field_${key}`) || key;
 
                       if (value?.before !== undefined && value?.after !== undefined) {
+                        const isBool = typeof value.before === 'boolean' && typeof value.after === 'boolean';
                         return (
                           <li key={key}>
                             <strong>{label}</strong>:&nbsp;
-                            <span className="line-through text-red-600">{value.before}</span>{' '}
-                            → <span className="text-green-700">{value.after}</span>
+                            <span className="line-through text-red-600">
+                              {isBool ? (value.before ? '✅' : '❌') : value.before}
+                            </span>{' '}
+                            → <span className="text-green-700">
+                              {isBool ? (value.after ? '✅' : '❌') : value.after}
+                            </span>
                           </li>
                         );
                       }
-
+                      
                       return (
                         <li key={key}>
-                          <strong>{label}</strong>: {JSON.stringify(value)}
+                          <strong>{label}</strong>:&nbsp;
+                          {typeof value === 'boolean' ? (value ? '✅' : '❌') : JSON.stringify(value)}
                         </li>
                       );
-                    })}
+                                          })}
                   </ul>
                 </li>
               ))}
