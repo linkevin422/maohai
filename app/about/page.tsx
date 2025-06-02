@@ -10,7 +10,6 @@ export default function AboutPage() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen pt-[64px] px-4 sm:px-8 pb-24 bg-black text-white flex flex-col items-center justify-start">
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -32,7 +31,6 @@ export default function AboutPage() {
           </div>
         </motion.section>
       </main>
-      <Footer />
     </>
   );
 }

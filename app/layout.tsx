@@ -1,5 +1,7 @@
 import '@/app/globals.css';
 import { LanguageProvider } from '@/lib/LanguageProvider';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata = {
   metadataBase: new URL("https://maohai.tw"),
@@ -45,8 +47,14 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="bg-zinc-950 text-white min-h-screen font-sans">
-        <LanguageProvider>{children}</LanguageProvider>
+      <body className="bg-zinc-950 text-white font-sans">
+        <LanguageProvider>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </LanguageProvider>
       </body>
     </html>
   );

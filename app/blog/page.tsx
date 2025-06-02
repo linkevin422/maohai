@@ -6,18 +6,40 @@ import { Blog } from '@/types';
 import { useText } from '@/lib/getText';
 import Link from 'next/link';
 import classNames from 'classnames';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
-const categories = ['最新', '好健康', '好旅遊', '好餐廳', '好獸醫', '好地點', '好書', '好用品'];
+const categoryKeys = ['latest', 'health', 'travel', 'restaurant', 'vet', 'location', 'books', 'supplies'];
+
+const categoryMap: Record<string, string> = {
+  latest: '',
+  health: '好健康',
+  travel: '好旅遊',
+  restaurant: '好餐廳',
+  vet: '好獸醫',
+  location: '好地點',
+  books: '好書',
+  supplies: '好用品',
+};
+
+const categoryNameToKey: Record<string, string> = {
+  '好健康': 'health',
+  '好旅遊': 'travel',
+  '好餐廳': 'restaurant',
+  '好獸醫': 'vet',
+  '好地點': 'location',
+  '好書': 'books',
+  '好用品': 'supplies',
+};
 
 export default function BlogPage() {
   const supabase = createClientComponentClient();
   const { getText } = useText();
 
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [activeCategory, setActiveCategory] = useState('最新');
+  const [activeCategory, setActiveCategory] = useState('latest');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [contentLang, setContentLang] = useState<'en' | 'zh-Hant'>('zh-Hant');
 
   useEffect(() => {
     const load = async () => {
@@ -30,14 +52,13 @@ export default function BlogPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    let list = blogs;
+    let list = blogs.filter((b) => b.language === getText('lang_code'));
 
-    if (!search.trim()) {
-      list = list.filter((b) => b.language === contentLang);
-      if (activeCategory !== '最新') {
-        list = list.filter((b) => b.category === activeCategory);
-      }
-    } else {
+    if (activeCategory !== 'latest') {
+      list = list.filter((b) => b.category === categoryMap[activeCategory]);
+    }
+
+    if (search.trim()) {
       const term = search.toLowerCase();
       list = list.filter(
         (b) =>
@@ -48,96 +69,76 @@ export default function BlogPage() {
     }
 
     return list;
-  }, [blogs, activeCategory, search, contentLang]);
+  }, [blogs, activeCategory, search, getText]);
 
   const pinned = useMemo(() => filtered.filter((b) => b.pinned), [filtered]);
   const normal = useMemo(() => filtered.filter((b) => !b.pinned), [filtered]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 pb-24 pt-8">
-      {/* Language Switch */}
-      <div className="mb-4 text-center">
-        <button
-          className={classNames(
-            'px-3 py-1.5 rounded-l-full border',
-            contentLang === 'zh-Hant'
-              ? 'bg-black text-white dark:bg-white dark:text-black'
-              : 'bg-white text-gray-700 dark:bg-black dark:text-white'
-          )}
-          onClick={() => setContentLang('zh-Hant')}
-        >
-          中文
-        </button>
-        <button
-          className={classNames(
-            'px-3 py-1.5 rounded-r-full border',
-            contentLang === 'en'
-              ? 'bg-black text-white dark:bg-white dark:text-black'
-              : 'bg-white text-gray-700 dark:bg-black dark:text-white'
-          )}
-          onClick={() => setContentLang('en')}
-        >
-          EN
-        </button>
-      </div>
+    <>
 
+      <main className="pt-24 max-w-6xl mx-auto px-4 pb-8">
       {/* Tabs */}
-      <div className="overflow-x-auto whitespace-nowrap mb-4">
-        <div className="flex space-x-3">
-          {categories.map((c) => (
-            <button
-              key={c}
-              className={classNames(
-                'px-4 py-2 rounded-full text-sm shrink-0 border transition',
-                activeCategory === c
-                  ? 'bg-black text-white dark:bg-white dark:text-black'
-                  : 'border-gray-300 dark:border-gray-700'
-              )}
-              onClick={() => setActiveCategory(c)}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="relative mb-6 max-w-md mx-auto">
-        <input
-          type="text"
-          placeholder={getText('search_placeholder') || '搜尋文章…'}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-black dark:text-white shadow-sm"
-        />
-      </div>
-
-      {/* Pinned */}
-      {pinned.length > 0 && (
-        <div className="mb-8">
-          <h2 className="font-bold text-lg mb-4">{getText('pinned') || '精選文章'}</h2>
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {pinned.map((b) => (
-              <BlogCard key={b.id} blog={b} search={search} />
+        <div className="overflow-x-auto whitespace-nowrap mb-4">
+          <div className="flex space-x-3">
+            {categoryKeys.map((key) => (
+              <button
+                key={key}
+                className={classNames(
+                  'px-4 py-2 rounded-full text-sm shrink-0 border transition',
+                  activeCategory === key
+                    ? 'bg-black text-white dark:bg-white dark:text-black'
+                    : 'border-gray-300 dark:border-gray-700'
+                )}
+                onClick={() => setActiveCategory(key)}
+              >
+                {getText(`blog_category_${key}`)}
+              </button>
             ))}
           </div>
         </div>
-      )}
 
-      {/* Normal */}
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {normal.map((b) => (
-          <BlogCard key={b.id} blog={b} search={search} />
-        ))}
-      </div>
+        {/* Search */}
+        <div className="relative mb-6 max-w-md mx-auto">
+          <input
+            type="text"
+            placeholder={getText('blog_search')}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-black dark:text-white shadow-sm"
+          />
+        </div>
 
-      {loading && <div className="text-center mt-12 text-gray-500">載入中…</div>}
-    </div>
+        {/* Pinned */}
+        {pinned.length > 0 && activeCategory !== 'latest' && (
+          <div className="mb-8">
+            <h2 className="font-bold text-lg mb-4">{getText('blog_pinned')}</h2>
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+              {pinned.map((b) => (
+                <BlogCard key={b.id} blog={b} search={search} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Normal */}
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {normal.map((b) => (
+            <BlogCard key={b.id} blog={b} search={search} />
+          ))}
+        </div>
+
+        {loading && <div className="text-center mt-12 text-gray-500">{getText('loading')}</div>}
+      </main>
+
+    </>
   );
 }
 
 function BlogCard({ blog, search }: { blog: Blog; search: string }) {
   const { title, slug, cover_image_url, reading_time, excerpt, category } = blog;
+  const { getText } = useText();
+  const categoryKey = categoryNameToKey[category] || 'latest';
 
   const highlight = (text: string) => {
     if (!search.trim()) return text;
@@ -162,7 +163,7 @@ function BlogCard({ blog, search }: { blog: Blog; search: string }) {
         <img src={cover_image_url} alt="" className="w-full h-40 object-cover" loading="lazy" />
       )}
       <div className="p-4 space-y-2">
-        <div className="text-xs text-gray-500">{category}</div>
+        <div className="text-xs text-gray-500">{getText(`blog_category_${categoryKey}`)}</div>
         <h3 className="font-bold text-base line-clamp-2">{highlight(title)}</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">{highlight(excerpt || '')}</p>
         {reading_time && (

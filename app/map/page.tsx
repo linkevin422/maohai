@@ -13,11 +13,9 @@ export default function MapPage() {
 
   return (
     <>
-      <Header />
       <div className="relative w-full h-screen pt-[64px] overflow-hidden">
         <Map selectedCategory={category} setSelectedCategory={setCategory} />
         <div className="absolute bottom-0 left-0 w-full z-50">
-          <Footer />
         </div>
       </div>
     </>

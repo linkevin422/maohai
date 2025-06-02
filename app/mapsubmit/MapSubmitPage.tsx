@@ -194,18 +194,15 @@ export default function MapSubmitPage() {
   if (!user || !admins.includes(user.user_metadata?.username || '')) {
     return (
       <>
-        <Header />
         <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 pt-24">
           <p>{getText('unauthorized_meow')}</p>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Header />
       <div className="bg-black text-white px-4 sm:px-6 md:px-8 pt-24 pb-32 max-w-2xl mx-auto space-y-10">
         <h1 className="text-xl sm:text-2xl font-bold">{getText('mapsubmit_title')}</h1>
 
@@ -318,7 +315,6 @@ export default function MapSubmitPage() {
           )}
         </div>
       </div>
-      <Footer />
     </>
   );
 }

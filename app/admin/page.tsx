@@ -51,18 +51,15 @@ export default function AdminPage() {
   if (!user || !admins.includes(user.user_metadata?.username || "")) {
     return (
       <>
-        <Header />
         <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
           <p>🚫 Not authorized</p>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Header />
       <div className="min-h-screen bg-black text-white p-6">
         <h1 className="text-3xl font-bold mb-8 text-center">🛠️ Map Suggestions</h1>
 
@@ -132,7 +129,6 @@ export default function AdminPage() {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 }

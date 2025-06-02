@@ -78,8 +78,8 @@ header_loveyou: {
     "zh-Hant": "地圖",
   },
   header_blog: {
-    en: "Blog",
-    "zh-Hant": "部落格",
+    en: "Articles",
+    "zh-Hant": "文章",
   },
 
   // auth
@@ -652,5 +652,21 @@ field_waterBowlProvided: {
   en: "Water bowl provided",
   "zh-Hant": "有提供水碗"
 },
+
+//blog
+
+blog_category_latest: { en: 'Latest', 'zh-Hant': '最新' },
+blog_category_health: { en: 'Health', 'zh-Hant': '好健康' },
+blog_category_travel: { en: 'Travel', 'zh-Hant': '好旅遊' },
+blog_category_restaurant: { en: 'Restaurants', 'zh-Hant': '好餐廳' },
+blog_category_vet: { en: 'Veterinary', 'zh-Hant': '好獸醫' },
+blog_category_location: { en: 'Places', 'zh-Hant': '好地點' },
+blog_category_books: { en: 'Books', 'zh-Hant': '好書' },
+blog_category_supplies: { en: 'Supplies', 'zh-Hant': '好用品' },
+blog_search: { en: 'Search articles…', 'zh-Hant': '搜尋文章…' },
+blog_pinned: { en: 'Featured', 'zh-Hant': '精選文章' },
+loading: { en: 'Loading…', 'zh-Hant': '載入中…' },
+lang_code: { en: 'en', 'zh-Hant': 'zh-Hant' },
+
 
 };

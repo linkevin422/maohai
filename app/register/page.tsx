@@ -99,7 +99,6 @@ export default function RegisterPage() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-black text-white px-4 py-20 flex items-center justify-center">
         <form
           onSubmit={handleRegister}
@@ -185,7 +184,6 @@ export default function RegisterPage() {
           )}
         </form>
       </main>
-      <Footer />
     </>
   );
 }
