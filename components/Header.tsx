@@ -70,28 +70,26 @@ export default function Header() {
   const username = user?.user_metadata?.username;
 
   return (
-<header className="w-full fixed top-0 left-0 z-50 bg-black border-b border-white/10">
-<div className="w-full px-2 sm:px-4 py-4 flex items-center justify-between">
-<Link href="/" className="flex items-baseline gap-1 group text-white hover:opacity-90 transition">
-  <span className="text-2xl font-bold">毛孩</span>
-  <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-white/50 group-hover:text-white/80 transition">
-    maohai.tw
-  </span>
-</Link>
+<header className="w-full bg-[#FFF6EF] text-[#3A2B2B] border-b border-[#E7D8D1]">
+<div className="w-full px-2 sm:px-4 py-4 flex items-center justify-between border-none">
+        <Link href="/" className="flex items-baseline gap-1 group hover:opacity-90 transition">
+<span className="text-3xl font-bold calligraphy">毛孩</span>
+          <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-[#7A5F5F] group-hover:text-[#574964] transition">
+            maohai.tw
+          </span>
+        </Link>
 
         <div className="flex-1" />
 
-        <nav className="flex items-center gap-6 text-sm font-medium text-white relative">
-          <Link href="/about" className="hover:text-purple-300 transition">{getText('header_about')}</Link>
-          <Link href="/blog" className="hover:text-purple-300 transition">{getText('header_blog')}</Link>
-          <Link href="/loveyou" className="hover:text-purple-300 transition">
-  {getText('header_loveyou')}
-</Link>
+        <nav className="flex items-center gap-6 text-sm font-medium relative">
+          <Link href="/about" className="hover:text-[#7A5F5F] transition">{getText('header_about')}</Link>
+          <Link href="/blog" className="hover:text-[#7A5F5F] transition">{getText('header_blog')}</Link>
+          <Link href="/loveyou" className="hover:text-[#7A5F5F] transition">{getText('header_loveyou')}</Link>
 
           {!user ? (
             <button
               onClick={() => setLoginOpen(!loginOpen)}
-              className="hover:text-purple-300 transition"
+              className="hover:text-[#7A5F5F] transition"
             >
               {getText('auth_login_button')}
             </button>
@@ -99,16 +97,16 @@ export default function Header() {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="hover:text-purple-300 transition flex items-center gap-2"
+                className="hover:text-[#7A5F5F] transition flex items-center gap-2"
               >
                 <span className="font-semibold">{username || 'User'}</span>
                 <ChevronDown size={14} />
               </button>
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-black border border-white/10 rounded-md shadow-xl overflow-hidden z-50">
+                <div className="absolute right-0 mt-2 w-40 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-white/10 transition"
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition"
                   >
                     {getText('logout_button')}
                   </button>
@@ -120,13 +118,13 @@ export default function Header() {
           <div className="relative">
             <button
               onClick={() => setLanguageOpen(!languageOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 bg-white/5 hover:border-white/40 transition"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#C8AAAA] bg-[#FFF6EF] hover:border-[#9F8383] transition"
             >
               <span>{languages.find((l) => l.code === lang)?.label}</span>
               <ChevronDown size={14} />
             </button>
             {languageOpen && (
-              <div className="absolute right-0 mt-2 w-32 bg-black border border-white/10 rounded-md shadow-xl overflow-hidden z-50">
+              <div className="absolute right-0 mt-2 w-32 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
                 {languages.map((l) => (
                   <button
                     key={l.code}
@@ -134,8 +132,8 @@ export default function Header() {
                       setLang(l.code as 'en' | 'zh-Hant');
                       setLanguageOpen(false);
                     }}
-                    className={`w-full px-4 py-2 text-left text-sm hover:bg-white/10 transition ${
-                      l.code === lang ? 'bg-white/10' : ''
+                    className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FFDAB3] transition ${
+                      l.code === lang ? 'bg-[#FFDAB3]' : ''
                     }`}
                   >
                     {l.label}
@@ -148,10 +146,10 @@ export default function Header() {
       </div>
 
       {loginOpen && (
-        <div className="absolute right-4 top-[72px] w-80 bg-black border border-white/10 rounded-xl p-4 shadow-xl z-50">
+        <div className="absolute right-4 top-[72px] w-80 bg-[#FFF6EF] border border-[#C8AAAA] rounded-xl p-4 shadow-xl z-50 text-[#574964]">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-white text-sm font-bold">{getText('login_title')}</h2>
-            <button onClick={() => setLoginOpen(false)} className="text-white hover:text-red-400 transition">
+            <h2 className="text-sm font-bold">{getText('login_title')}</h2>
+            <button onClick={() => setLoginOpen(false)} className="hover:text-red-500 transition">
               <X size={18} />
             </button>
           </div>
@@ -161,7 +159,7 @@ export default function Header() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={getText('auth_email')}
-              className="px-3 py-2 rounded bg-white/10 border border-white/10 text-white text-sm"
+              className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
               required
             />
             <input
@@ -169,21 +167,21 @@ export default function Header() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={getText('auth_password')}
-              className="px-3 py-2 rounded bg-white/10 border border-white/10 text-white text-sm"
+              className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
               required
             />
-            <label className="flex items-center text-xs gap-2 text-white">
+            <label className="flex items-center text-xs gap-2">
               <input
                 type="checkbox"
                 checked={remember}
                 onChange={(e) => setRemember(e.target.checked)}
-                className="accent-purple-500"
+                className="accent-[#574964]"
               />
               {getText('auth_remember')}
             </label>
 
             {error && (
-              <div className="text-red-400 text-xs">
+              <div className="text-red-500 text-xs">
                 {error === 'Invalid login credentials'
                   ? getText('auth_error_invalid_credentials')
                   : error === 'User not found'
@@ -196,21 +194,21 @@ export default function Header() {
 
             <button
               type="submit"
-              className="w-full py-2 mt-1 text-sm rounded bg-purple-600 hover:bg-purple-700 transition"
+              className="w-full py-2 mt-1 text-sm rounded bg-[#574964] hover:bg-[#9F8383] text-white transition"
             >
               {getText('auth_login_button')}
             </button>
 
             <Link
               href="/forgot"
-              className="text-xs text-white underline hover:text-purple-300 transition text-center"
+              className="text-xs underline hover:text-[#9F8383] transition text-center"
             >
               {getText('auth_forgot')}
             </Link>
 
             <Link
               href="/register"
-              className="text-xs text-white underline hover:text-purple-300 transition text-center"
+              className="text-xs underline hover:text-[#9F8383] transition text-center"
             >
               {getText('auth_register_button')}
             </Link>

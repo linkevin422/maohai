@@ -1,24 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
 @import 'react-quill/dist/quill.snow.css';
 
-
+/* Global base */
 html,
-body {
-  @apply bg-black text-white font-sans;
+body,
+#__next {
+  @apply bg-[#FFF6EF] text-[#574964] font-sans;
   margin: 0;
   padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #FFF6EF;
 }
 
-/* Move Leaflet zoom buttons to bottom left */
+/* Reset */
+* {
+  box-shadow: none;
+}
+
+/* Fix Leaflet zoom button location */
 .leaflet-top.leaflet-left {
   top: auto !important;
   bottom: 6rem !important;
   left: 1rem !important;
 }
 
+/* Tiptap Editor */
 .ProseMirror {
   min-height: 300px;
   padding: 1rem;
@@ -29,10 +41,18 @@ body {
   cursor: text;
   white-space: pre-wrap;
   word-break: break-word;
-  caret-color: black;
+  caret-color: #574964;
+  background-color: transparent;
+  color: #574964;
 }
 
 .ProseMirror:focus {
   outline: none !important;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&display=swap');
+
+.calligraphy {
+  font-family: 'Noto Serif TC', 'DFKai-SB', '標楷體', cursive;
+  letter-spacing: 0.05em;
+}

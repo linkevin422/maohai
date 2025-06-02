@@ -10,12 +10,12 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="w-full bg-black/70 backdrop-blur-md text-white text-xs border-t border-white/10 py-2">
-        <div className="max-w-5xl mx-auto px-4 h-10 flex items-center justify-between">
-          <span className="opacity-60">{getText('footer_copyright')}</span>
+      <footer className="w-full bg-[#FFF6EF] text-[#574964] text-xs border-t border-[#C8AAAA]/50 py-4">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+          <span className="opacity-70">{getText('footer_copyright')}</span>
           <button
             onClick={() => setShowModal(true)}
-            className="text-white text-xs underline hover:opacity-80 transition"
+            className="px-4 py-1.5 rounded-full text-xs bg-[#C8AAAA] text-white hover:bg-[#b08d8d] transition"
           >
             {getText('footer_button_subscribe')}
           </button>

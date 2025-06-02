@@ -75,10 +75,9 @@ export default function BlogPage() {
   const normal = useMemo(() => filtered.filter((b) => !b.pinned), [filtered]);
 
   return (
-    <>
-
-      <main className="pt-24 max-w-6xl mx-auto px-4 pb-8">
-      {/* Tabs */}
+<div className="bg-[#FFF6EF] min-h-screen">
+  <main className="pt-24 max-w-6xl mx-auto px-4 pb-8 text-[#574964]">
+        {/* Tabs */}
         <div className="overflow-x-auto whitespace-nowrap mb-4">
           <div className="flex space-x-3">
             {categoryKeys.map((key) => (
@@ -87,8 +86,8 @@ export default function BlogPage() {
                 className={classNames(
                   'px-4 py-2 rounded-full text-sm shrink-0 border transition',
                   activeCategory === key
-                    ? 'bg-black text-white dark:bg-white dark:text-black'
-                    : 'border-gray-300 dark:border-gray-700'
+                    ? 'bg-[#574964] text-white'
+                    : 'border-[#C8AAAA] text-[#574964] hover:bg-[#FFDAB3] hover:text-[#574964]'
                 )}
                 onClick={() => setActiveCategory(key)}
               >
@@ -100,13 +99,13 @@ export default function BlogPage() {
 
         {/* Search */}
         <div className="relative mb-6 max-w-md mx-auto">
-          <input
-            type="text"
-            placeholder={getText('blog_search')}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-black dark:text-white shadow-sm"
-          />
+        <input
+  type="text"
+  placeholder={getText('blog_search')}
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full px-4 py-2 rounded-full border border-[#B08D8D] bg-[#C8AAAA] text-[#3A1F1F] placeholder-[#3A1F1F] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#9F8383]"
+/>
         </div>
 
         {/* Pinned */}
@@ -128,10 +127,9 @@ export default function BlogPage() {
           ))}
         </div>
 
-        {loading && <div className="text-center mt-12 text-gray-500">{getText('loading')}</div>}
+        {loading && <div className="text-center mt-12 text-[#9F8383]">{getText('loading')}</div>}
       </main>
-
-    </>
+      </div>
   );
 }
 
@@ -145,7 +143,7 @@ function BlogCard({ blog, search }: { blog: Blog; search: string }) {
     const regex = new RegExp(`(${search})`, 'gi');
     return text.split(regex).map((part, i) =>
       part.toLowerCase() === search.toLowerCase() ? (
-        <mark key={i} className="bg-yellow-300 dark:bg-yellow-600 px-1">
+        <mark key={i} className="bg-[#9F8383] text-white px-1 rounded">
           {part}
         </mark>
       ) : (
@@ -157,17 +155,17 @@ function BlogCard({ blog, search }: { blog: Blog; search: string }) {
   return (
     <Link
       href={`/blog/${slug}`}
-      className="border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition bg-white dark:bg-neutral-900 dark:border-neutral-800"
+      className="border border-[#C8AAAA] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition bg-[#FFF6EF]"
     >
       {cover_image_url && (
         <img src={cover_image_url} alt="" className="w-full h-40 object-cover" loading="lazy" />
       )}
       <div className="p-4 space-y-2">
-        <div className="text-xs text-gray-500">{getText(`blog_category_${categoryKey}`)}</div>
+        <div className="text-xs text-[#9F8383]">{getText(`blog_category_${categoryKey}`)}</div>
         <h3 className="font-bold text-base line-clamp-2">{highlight(title)}</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">{highlight(excerpt || '')}</p>
+        <p className="text-sm text-[#574964] line-clamp-3">{highlight(excerpt || '')}</p>
         {reading_time && (
-          <div className="text-xs text-right text-gray-400">
+          <div className="text-xs text-right text-[#C8AAAA]">
             {reading_time} 分鐘閱讀
           </div>
         )}

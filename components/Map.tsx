@@ -19,8 +19,8 @@ import { useRouter } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 
 const taiwanBounds: L.LatLngBoundsExpression = [
-  [21.5, 118.8], // extend west & south
-  [26.8, 123.2], // extend north & east
+  [20.5, 117.5], // southwest — push west & south to include Kinmen/Matsu
+  [27.0, 123.5], // northeast — slightly expanded
 ];
 
 function SetMapInstance({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
@@ -94,12 +94,22 @@ const cities = [
   { key: 'NewTaipei', coords: [25.0169, 121.4628] },
   { key: 'Taoyuan', coords: [24.9937, 121.3009] },
   { key: 'Hsinchu', coords: [24.8138, 120.9675] },
+  { key: 'Miaoli', coords: [24.5602, 120.8204] },
   { key: 'Taichung', coords: [24.1477, 120.6736] },
+  { key: 'Changhua', coords: [24.072, 120.543] },
+  { key: 'Nantou', coords: [23.913, 120.685] },
+  { key: 'Yunlin', coords: [23.707, 120.431] },
   { key: 'Chiayi', coords: [23.4801, 120.4491] },
   { key: 'Tainan', coords: [22.9999, 120.2269] },
   { key: 'Kaohsiung', coords: [22.6273, 120.3014] },
+  { key: 'Pingtung', coords: [22.551, 120.548] },
+  { key: 'Yilan', coords: [24.7021, 121.7378] },
   { key: 'Hualien', coords: [23.9872, 121.6015] },
   { key: 'Taitung', coords: [22.7583, 121.1444] },
+  { key: 'Keelung', coords: [25.1283, 121.7419] },
+  { key: 'Penghu', coords: [23.5715, 119.5797] },
+  { key: 'Kinmen', coords: [24.4321, 118.3171] },
+  { key: 'Matsu', coords: [26.1608, 119.9519] },
 ];
 
 const categories: Category[] = [

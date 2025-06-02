@@ -190,12 +190,12 @@ register_title: {
     "zh-Hant": "獸醫院",
   },
   map_category_hotel: {
-    en: "Hotels",
+    en: "Pet Hotels",
     "zh-Hant": "寵物旅館",
   },
   map_category_human_hotel: {
     en: "Pet-Friendly Hotels",
-    "zh-Hant": "可攜寵物入住的飯店",
+    "zh-Hant": "寵物友善飯店",
   },
   map_category_park: {
     en: "Parks",
@@ -668,5 +668,46 @@ blog_pinned: { en: 'Featured', 'zh-Hant': '精選文章' },
 loading: { en: 'Loading…', 'zh-Hant': '載入中…' },
 lang_code: { en: 'en', 'zh-Hant': 'zh-Hant' },
 
+//map jump
+city_Yilan: {
+  en: 'Yilan',
+  'zh-Hant': '宜蘭'
+},
+city_Keelung: {
+  en: 'Keelung',
+  'zh-Hant': '基隆'
+},
+city_Miaoli: {
+  en: 'Miaoli',
+  'zh-Hant': '苗栗'
+},
+city_Changhua: {
+  en: 'Changhua',
+  'zh-Hant': '彰化'
+},
+city_Nantou: {
+  en: 'Nantou',
+  'zh-Hant': '南投'
+},
+city_Yunlin: {
+  en: 'Yunlin',
+  'zh-Hant': '雲林'
+},
+city_Pingtung: {
+  en: 'Pingtung',
+  'zh-Hant': '屏東'
+},
+city_Penghu: {
+  en: 'Penghu',
+  'zh-Hant': '澎湖'
+},
+city_Kinmen: {
+  en: 'Kinmen',
+  'zh-Hant': '金門'
+},
+city_Matsu: {
+  en: 'Matsu',
+  'zh-Hant': '馬祖'
+},
 
 };
