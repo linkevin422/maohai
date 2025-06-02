@@ -230,6 +230,11 @@ register_title: {
     en: "Grooming Salon",
     "zh-Hant": "寵物美容店",
   },
+  map_category_reg: {
+    en: 'Registration Office',
+    'zh-Hant': '登記站',
+  },
+  
 
   // ===== MAP KEYS / PIN PROPERTIES =====
   map_key_petRoam: { en: "Pet can roam freely", "zh-Hant": "寵物可自由活動" },

@@ -153,7 +153,6 @@ export default function RegisterPage() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full text-center px-4 py-2 rounded-md border text-white placeholder-white/70 bg-[#9F8383] border-[#574964] outline-none font-mono tracking-wide text-lg"
-            placeholder="Your unique ID"
             required
           />
         </div>
@@ -225,15 +224,17 @@ export default function RegisterPage() {
               {getText('auth_resend_prompt')}
             </p>
             <button
-              type="button"
-              onClick={handleResend}
-              disabled={resending}
-              className="w-full py-2 rounded-md text-sm font-semibold text-white mt-4 bg-[#574964] hover:bg-[#473757] transition disabled:opacity-60"
-            >
-              {resending
-                ? getText('auth_resending')
-                : getText('auth_resend_button')}
-            </button>
+  type="button"
+  onClick={handleResend}
+  disabled={resending}
+  className="w-full py-2 rounded-md text-sm font-semibold text-white mt-4 bg-[#574964] hover:bg-[#473757] transition disabled:opacity-60 flex justify-center items-center"
+>
+  {resending ? (
+    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+  ) : (
+    getText('auth_resend_button')
+  )}
+</button>
             {resendSuccess && (
               <p className="text-green-100 text-sm text-center pt-1">
                 {getText('auth_resend_success')}
@@ -246,13 +247,17 @@ export default function RegisterPage() {
             )}
           </>
         ) : (
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 rounded-md text-sm font-semibold text-white mt-2 bg-[#574964] hover:bg-[#473757] transition disabled:opacity-60"
-          >
-            {getText('auth_register_button')}
-          </button>
+<button
+  type="submit"
+  disabled={loading}
+  className="w-full py-2 rounded-md text-sm font-semibold text-white mt-2 bg-[#574964] hover:bg-[#473757] transition disabled:opacity-60 flex justify-center items-center"
+>
+  {loading ? (
+    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+  ) : (
+    getText('auth_register_button')
+  )}
+</button>
         )}
       </form>
     </main>

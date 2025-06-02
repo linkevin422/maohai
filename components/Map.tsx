@@ -87,6 +87,12 @@ const customIcons = {
     iconAnchor: [18, 36],
     popupAnchor: [0, -36],
   }),
+  reg: L.icon({
+    iconUrl: '/pins/pin_reg.png',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  }),
 };
 
 const cities = [
@@ -120,6 +126,7 @@ const categories: Category[] = [
   'park',
   'shop',
   'groomer',
+  'reg',
 ];
 
 function ForceResize() {
@@ -309,66 +316,83 @@ export default function Map({
               }
             >
 <Popup autoPan={true} autoPanPadding={[20, 100]}>
-<div className="font-semibold text-base mb-1">
-                  {pin.google_maps_url ? (
-                    <a
-                      href={pin.google_maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline hover:opacity-80"
-                      onClick={() => {
-                        supabase
-                          .from('locations')
-                          .update({ click_count: (pin.click_count || 0) + 1 })
-                          .eq('id', pin.id);
-                      }}
-                    >
-                      {pin.name}
-                    </a>
-                  ) : (
-                    <span>{pin.name}</span>
-                  )}
-                </div>
-                {pin.address && (
-                  <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>
-                )}
-                <div className="text-xs text-gray-500 mb-2">
-                  {getText(`map_category_${pin.category}`)}
-                </div>
-                <ul className="text-sm text-gray-800 space-y-1">
-                  {Object.entries(pin.data || {}).map(([k, v]) => {
-                    const val = v as string | number | boolean;
-                    const isPetSizeKey = k === 'maxPetSize' && typeof val === 'string';
-                    const translated = isPetSizeKey ? getText(`map_size_${val}`) : val;
-                    return (
-                      <li key={k}>
-                        {typeof val === 'boolean'
-                          ? `${val ? '✅' : '❌'} ${getText(`map_key_${k}`)}`
-                          : `🔹 ${getText(`map_key_${k}`)}: ${translated}`}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <div className="mt-3">
-                  <button
-                    onClick={() => {
-                      if (user) {
-                        const params = new URLSearchParams({
-                          id: pin.id,
-                          name: pin.name,
-                          category: pin.category,
-                        }).toString();
-                        router.push(`/mapsubmit?${params}`);
-                      } else {
-                        router.push('/register');
-                      }
-                    }}
-                    className="text-blue-600 underline text-xs hover:opacity-80"
-                  >
-                    {getText('map_popup_suggest_edit')}
-                  </button>
-                </div>
-              </Popup>
+  <div className="font-semibold text-base mb-1">
+    {pin.google_maps_url ? (
+      <a
+        href={pin.google_maps_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline hover:opacity-80"
+        onClick={() => {
+          supabase
+            .from('locations')
+            .update({ click_count: (pin.click_count || 0) + 1 })
+            .eq('id', pin.id);
+        }}
+      >
+        {pin.name}
+      </a>
+    ) : (
+      <span>{pin.name}</span>
+    )}
+  </div>
+
+  {pin.address && (
+    <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>
+  )}
+
+  <div className="text-xs text-gray-500 mb-2">
+    {getText(`map_category_${pin.category}`)}
+  </div>
+
+  <ul className="text-sm text-gray-800 space-y-1">
+    {Object.entries(pin.data || {}).map(([k, v]) => {
+      const val = v as string | number | boolean;
+      const isPetSizeKey = k === 'maxPetSize' && typeof val === 'string';
+      const translated = isPetSizeKey ? getText(`map_size_${val}`) : val;
+      return (
+        <li key={k}>
+          {typeof val === 'boolean'
+            ? `${val ? '✅' : '❌'} ${getText(`map_key_${k}`)}`
+            : `🔹 ${getText(`map_key_${k}`)}: ${translated}`}
+        </li>
+      );
+    })}
+  </ul>
+
+  {pin.category !== 'reg' && (
+    <div className="mt-3">
+      <button
+        onClick={() => {
+          if (user) {
+            const params = new URLSearchParams({
+              id: pin.id,
+              name: pin.name,
+              category: pin.category,
+            }).toString();
+            router.push(`/mapsubmit?${params}`);
+          } else {
+            supabaseClient.auth.getUser().then(({ data }) => {
+              if (data.user) {
+                const params = new URLSearchParams({
+                  id: pin.id,
+                  name: pin.name,
+                  category: pin.category,
+                }).toString();
+                router.push(`/mapsubmit?${params}`);
+              } else {
+                router.push('/register');
+              }
+            });
+          }
+        }}
+        className="text-blue-600 underline text-xs hover:opacity-80"
+      >
+        {getText('map_popup_suggest_edit')}
+      </button>
+    </div>
+  )}
+</Popup>
             </Marker>
           ))}
       </SafeMapContainer>

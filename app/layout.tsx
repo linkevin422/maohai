@@ -44,9 +44,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-Hant" className="h-full">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </head>
+<head>
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="any" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+</head>
       <body className="h-full bg-[#FFF6EF] text-[#574964] font-sans">
       <LanguageProvider>
   <div className="min-h-screen flex flex-col">

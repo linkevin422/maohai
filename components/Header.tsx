@@ -25,6 +25,9 @@ export default function Header() {
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const loginRef = useRef<HTMLDivElement | null>(null);
 
+  const [loginLoading, setLoginLoading] = useState(false);
+
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -59,7 +62,9 @@ export default function Header() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoginLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoginLoading(false);
     if (error) {
       setError(error.message);
     } else {
@@ -68,7 +73,7 @@ export default function Header() {
       setPassword('');
     }
   };
-
+  
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -208,12 +213,17 @@ export default function Header() {
         </div>
       )}
 
-      <button
-        type="submit"
-        className="w-full py-2 mt-1 text-sm rounded bg-[#574964] hover:bg-[#9F8383] text-white transition"
-      >
-        {getText('auth_login_button')}
-      </button>
+<button
+  type="submit"
+  disabled={loginLoading}
+  className="w-full py-2 mt-1 text-sm rounded bg-[#574964] hover:bg-[#9F8383] text-white transition flex justify-center items-center"
+>
+  {loginLoading ? (
+    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+  ) : (
+    getText('auth_login_button')
+  )}
+</button>
 
       <Link
         href="/forgot"
