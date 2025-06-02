@@ -1,5 +1,8 @@
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { optimizeImage } from '@/lib/optimizeImage';
 
 type Blog = {
   id: string;
@@ -18,19 +21,24 @@ export default async function BlogListPage() {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error(error);
-    return <div>Error loading blogs.</div>;
+    console.error('Error loading blogs:', error);
+    return <div className="p-6 text-red-600">Error loading blogs.</div>;
+  }
+
+  if (!blogs || blogs.length === 0) {
+    return <div className="max-w-4xl mx-auto p-6">No published blogs found.</div>;
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-bold">All Blog Posts</h1>
-      {blogs?.map((blog) => (
+
+      {blogs.map((blog) => (
         <Link key={blog.id} href={`/blog/${blog.slug}`}>
-          <div className="border rounded p-4 hover:shadow transition">
+          <div className="border rounded p-4 hover:shadow transition cursor-pointer">
             {blog.cover_image_url && (
               <img
-                src={blog.cover_image_url}
+                src={optimizeImage(blog.cover_image_url)}
                 alt="Cover"
                 className="w-full h-48 object-cover rounded mb-2"
               />

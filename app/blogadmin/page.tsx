@@ -31,7 +31,6 @@ export default function BlogAdminPage() {
       setUserName(username);
       setAuthChecked(true);
     };
-
     checkUser();
   }, []);
 
@@ -44,25 +43,102 @@ export default function BlogAdminPage() {
 
   useEffect(() => {
     if (!authChecked || !admins.includes(userName || '')) return;
-
-    const fetchBlogs = async () => {
-      const { data, error } = await supabase
-        .from('blogs')
-        .select('id, title, slug, cover_image_url, image_public_id, created_at')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error(error);
-      } else {
-        setBlogs(data);
-      }
-
-      setLoading(false);
-    };
-
     fetchBlogs();
   }, [authChecked, userName]);
 
+  async function fetchBlogs() {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('id, title, slug, cover_image_url, image_public_id, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching blogs:', error);
+    } else {
+      setBlogs(data);
+    }
+
+    setLoading(false);
+  }
+
+  async function handleDelete(id: string, coverPublicId: string | null) {
+    const confirmDelete = window.confirm('Delete this blog post and all images?');
+    if (!confirmDelete) return;
+  
+    // Fetch content
+    const { data: blog, error: fetchError } = await supabase
+      .from('blogs')
+      .select('content')
+      .eq('id', id)
+      .single();
+  
+    if (fetchError || !blog?.content) {
+      alert(`❌ Failed to fetch blog content.\n${fetchError?.message || 'No content found.'}`);
+      return;
+    }
+  
+    const html = blog.content;
+    const imgTags = html.match(/<img[^>]+src="([^">]+)"/g) || [];
+  
+    let debug = `🖼 Found ${imgTags.length} image tag(s):\n`;
+  
+    const embeddedPublicIds = imgTags.map((tag: string, i: number) => {
+        const match = tag.match(/src="([^"]+)"/);
+        if (!match) {
+          debug += `❌ Tag ${i + 1}: could not extract src\n`;
+          return null;
+        }
+      
+        const url = match[1];
+        const filename = url.split('/').pop()?.split('.')[0];
+        if (!filename) {
+          debug += `❌ Tag ${i + 1}: failed to extract filename\n`;
+          return null;
+        }
+      
+        debug += `✅ Tag ${i + 1}: ${filename}\n`;
+        return filename;
+      }).filter(Boolean);
+        
+    if (coverPublicId) {
+      embeddedPublicIds.push(coverPublicId);
+      debug += `🪄 Including cover image: ${coverPublicId}\n`;
+    }
+  
+    alert(debug); // Shows all extracted public_ids before deleting
+  
+    // Delete blog
+    const { error: deleteError } = await supabase.from('blogs').delete().eq('id', id);
+    if (deleteError) {
+      alert(`❌ Failed to delete blog from Supabase.\n${deleteError.message}`);
+      return;
+    }
+  
+    // Delete images from Cloudinary
+    for (const public_id of embeddedPublicIds) {
+      try {
+        const res = await fetch('/api/deleteImage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ public_id }),
+        });
+  
+        const result = await res.json();
+  
+        if (!res.ok) {
+          alert(`⚠️ Failed to delete image:\n${public_id}\n\nCloudinary error:\n${JSON.stringify(result)}`);
+        } else {
+          alert(`✅ Image deleted from Cloudinary:\n${public_id}`);
+        }
+      } catch (err) {
+        alert(`💥 Error deleting image:\n${public_id}\n\n${String(err)}`);
+      }
+    }
+  
+    // Update state
+    setBlogs(prev => prev.filter(b => b.id !== id));
+  }
+  
   if (!authChecked || !admins.includes(userName || '')) return null;
 
   return (
@@ -116,32 +192,4 @@ export default function BlogAdminPage() {
       </div>
     </div>
   );
-
-  async function handleDelete(id: string, public_id: string | null) {
-    const confirm = window.confirm('Delete this blog post and its cover image?');
-    if (!confirm) return;
-
-    const { error } = await supabase.from('blogs').delete().eq('id', id);
-    if (error) {
-      console.error(error);
-      alert('Failed to delete blog.');
-      return;
-    }
-
-    if (public_id) {
-      const res = await fetch('/api/deleteImage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ public_id }),
-      });
-
-      const result = await res.json();
-      if (!res.ok) {
-        console.error(result);
-        alert('Image delete failed.');
-      }
-    }
-
-    setBlogs((prev) => prev.filter((b) => b.id !== id));
-  }
 }
