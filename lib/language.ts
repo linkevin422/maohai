@@ -28,6 +28,7 @@ export const translations: Record<string, { en: string; 'zh-Hant': string }> = {
     en: "Oops, wrong email or password!",
     "zh-Hant": "帳號或密碼打錯了喔！",
   },
+
   auth_error_user_not_found: {
     en: "No user found with this email.",
     "zh-Hant": "找不到該帳號，請確認電子郵件是否正確。",
@@ -83,6 +84,12 @@ header_loveyou: {
   },
 
   // auth
+
+  auth_error_terms_required: {
+    en: 'You must agree to the terms and conditions.',
+    'zh-Hant': '你必須同意條款與條件。',
+  },
+  
 auth_register_button: {
   en: "Register",
   "zh-Hant": "註冊",
@@ -130,8 +137,22 @@ register_title: {
   en: "Register Account",
   "zh-Hant": "註冊帳號",
 },
-
-
+  auth_email: {
+    en: 'Email',
+    'zh-Hant': '電子郵件',
+  },
+  auth_password: {
+    en: 'Password',
+    'zh-Hant': '密碼',
+  },
+  auth_error_existing_username: {
+    en: 'This username is already taken.',
+    'zh-Hant': '使用者名稱已被使用。',
+  },
+  auth_accept_terms: {
+    en: 'I have read and agree to all terms and conditions.',
+    'zh-Hant': '我已閱讀並同意所有條款與條件。',
+  },
 
   // ===== MAP UI TEXT =====
   map_loading: {
@@ -559,16 +580,6 @@ footer_copyright: {
   "zh-Hant": "© 2025 毛孩",
 },
 
-//register
-auth_email: {
-  en: "Email",
-  "zh-Hant": "電子郵件",
-},
-auth_password: {
-  en: "Password",
-  "zh-Hant": "密碼",
-},
-
 //Loading
 "unauthorized_meow": {
   "en": "Meow...",
@@ -709,5 +720,8 @@ city_Matsu: {
   en: 'Matsu',
   'zh-Hant': '馬祖'
 },
+
+//regi
+
 
 };

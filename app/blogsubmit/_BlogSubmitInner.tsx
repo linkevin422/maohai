@@ -31,6 +31,8 @@ export default function BlogSubmitPage() {
   const [oldInsertedImageIds, setOldInsertedImageIds] = useState<string[]>([]);
 
   const [category, setCategory] = useState('');
+  const [language, setLanguage] = useState('en');
+
   const [tagInput, setTagInput] = useState('');
   const [tagList, setTagList] = useState<string[]>([]);
   const [thumbnailAlt, setThumbnailAlt] = useState('');
@@ -164,6 +166,7 @@ export default function BlogSubmitPage() {
       pinned,
       reading_time: readingTime,
       thumbnail_alt: thumbnailAlt,
+      language,
     };
 
     let result;
@@ -200,8 +203,8 @@ export default function BlogSubmitPage() {
   if (!admins.includes(userName || '')) return <p className="p-6 text-center text-red-600">你沒有權限喔</p>;
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10 bg-white rounded-xl shadow-xl space-y-8 border border-gray-200">
-      <h1 className="text-3xl font-extrabold text-center text-gray-900 tracking-tight">
+<div className="w-full max-w-6xl mx-auto px-8 py-12 bg-white rounded-2xl shadow-2xl space-y-10 border border-gray-200">
+<h1 className="text-3xl font-extrabold text-center text-gray-900 tracking-tight">
         {editingId ? '編輯文章' : '寫一篇新文章'}
       </h1>
 
@@ -237,6 +240,19 @@ export default function BlogSubmitPage() {
               />
             )}
           </div>
+
+          <div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">語言</label>
+  <select
+    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition text-gray-900 bg-white"
+    value={language}
+    onChange={(e) => setLanguage(e.target.value)}
+  >
+    <option value="en">English</option>
+    <option value="zh-Hant">繁體中文</option>
+  </select>
+</div>
+
 
           <select
             className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition text-gray-900 bg-white"

@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useText } from '@/lib/getText';
+
 
 const bannedWords = ['nigger', 'fag', 'faggot', 'fuck', 'shit'];
 
@@ -12,10 +11,15 @@ export default function RegisterPage() {
   const { getText } = useText();
   const supabase = createClientComponentClient();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [agreed, setAgreed] = useState(false);
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,40 +31,73 @@ export default function RegisterPage() {
     return bannedWords.some((word) => str.toLowerCase().includes(word));
   };
 
+  if (!mounted) return <div />; // ✅ This is now safe
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
-
+  
     if (!email || !password || !username) {
       setError(getText('auth_error_required'));
       return;
     }
-
+  
     if (password !== confirm) {
       setError(getText('auth_error_mismatch'));
       return;
     }
-
+  
+    if (!agreed) {
+      setError(getText('auth_error_terms_required'));
+      return;
+    }
+  
     if (containsBannedWord(username)) {
       setError(getText('auth_error_banned'));
       return;
     }
-
+  
     setLoading(true);
-
-    const { data: existing, error: lookupError } = await supabase
-      .from('auth.users')
-      .select('email')
+  
+    // ✅ Check email from profiles
+    const { data: emailMatch, error: emailCheckError } = await supabase
+      .from('profiles')
+      .select('id')
       .eq('email', email)
       .maybeSingle();
-
-    if (existing) {
+  
+    if (emailCheckError) {
+      setError('Email check failed.');
+      setLoading(false);
+      return;
+    }
+  
+    if (emailMatch) {
       setError(getText('auth_error_existing_email'));
       setLoading(false);
       return;
     }
-
+  
+    // ✅ Check username from profiles
+    const { data: usernameMatch, error: usernameCheckError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('username', username)
+      .maybeSingle();
+  
+    if (usernameCheckError) {
+      setError('Username check failed.');
+      setLoading(false);
+      return;
+    }
+  
+    if (usernameMatch) {
+      setError(getText('auth_error_existing_username'));
+      setLoading(false);
+      return;
+    }
+  
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -68,16 +105,16 @@ export default function RegisterPage() {
         data: { username },
       },
     });
-
+  
     if (signUpError) {
       setError(signUpError.message);
     } else {
       setSuccess(true);
     }
-
+  
     setLoading(false);
   };
-
+        
   const handleResend = async () => {
     setResendError('');
     setResendSuccess(false);
@@ -98,92 +135,126 @@ export default function RegisterPage() {
   };
 
   return (
-    <>
-      <main className="min-h-screen bg-black text-white px-4 py-20 flex items-center justify-center">
-        <form
-          onSubmit={handleRegister}
-          className="w-full max-w-sm bg-white/5 p-6 rounded-xl border border-white/10"
-        >
-          <h1 className="text-xl font-bold mb-4">{getText('register_title')}</h1>
+    <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#FFDAB3]">
+      <form
+        onSubmit={handleRegister}
+        className="w-full max-w-md rounded-2xl p-8 shadow-xl space-y-5 bg-[#C8AAAA] border border-[#9F8383]"
+      >
+        <h1 className="text-center text-2xl font-bold text-[#574964] tracking-wide">
+          {getText('register_title')}
+        </h1>
 
-          <label className="block text-sm mb-1">{getText('auth_username')}</label>
+        <div className="space-y-1 text-center">
+          <label className="block text-sm font-semibold text-[#574964]">
+            {getText('auth_username')}
+          </label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full mb-4 px-3 py-2 rounded bg-white/10 border border-white/10 text-white"
+            className="w-full text-center px-4 py-2 rounded-md border text-white placeholder-white/70 bg-[#9F8383] border-[#574964] outline-none font-mono tracking-wide text-lg"
+            placeholder="Your unique ID"
             required
           />
+        </div>
 
-          <label className="block text-sm mb-1">{getText('auth_email')}</label>
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-[#574964]">
+            {getText('auth_email')}
+          </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full mb-4 px-3 py-2 rounded bg-white/10 border border-white/10 text-white"
+            className="w-full px-4 py-2 rounded-md border text-white placeholder-white/70 bg-[#9F8383] border-[#574964] outline-none"
+            placeholder="you@example.com"
             required
           />
+        </div>
 
-          <label className="block text-sm mb-1">{getText('auth_password')}</label>
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-[#574964]">
+            {getText('auth_password')}
+          </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full mb-4 px-3 py-2 rounded bg-white/10 border border-white/10 text-white"
+            className="w-full px-4 py-2 rounded-md border text-white placeholder-white/70 bg-[#9F8383] border-[#574964] outline-none"
             required
           />
+        </div>
 
-          <label className="block text-sm mb-1">{getText('auth_confirm_password')}</label>
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-[#574964]">
+            {getText('auth_confirm_password')}
+          </label>
           <input
             type="password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            className="w-full mb-4 px-3 py-2 rounded bg-white/10 border border-white/10 text-white"
+            className="w-full px-4 py-2 rounded-md border text-white placeholder-white/70 bg-[#9F8383] border-[#574964] outline-none"
             required
           />
+        </div>
 
-          {success ? (
-            <>
-              <p className="text-green-400 text-sm text-center mb-2">
-                {getText('auth_success_email_sent')}
+        <div className="flex items-start gap-2 pt-1">
+          <input
+            id="terms"
+            type="checkbox"
+            checked={agreed}
+            onChange={() => setAgreed(!agreed)}
+            className="mt-1 accent-[#574964]"
+          />
+          <label htmlFor="terms" className="text-sm text-white">
+            {getText('auth_accept_terms')}
+          </label>
+        </div>
+
+        {error && (
+          <p className="text-sm text-red-100 text-center pt-1">{error}</p>
+        )}
+
+        {success ? (
+          <>
+            <p className="text-sm text-white text-center pt-1">
+              {getText('auth_success_email_sent')}
+            </p>
+            <p className="text-xs text-white/80 text-center">
+              {getText('auth_check_spam')} <br />
+              {getText('auth_resend_prompt')}
+            </p>
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="w-full py-2 rounded-md text-sm font-semibold text-white mt-4 bg-[#574964] hover:bg-[#473757] transition disabled:opacity-60"
+            >
+              {resending
+                ? getText('auth_resending')
+                : getText('auth_resend_button')}
+            </button>
+            {resendSuccess && (
+              <p className="text-green-100 text-sm text-center pt-1">
+                {getText('auth_resend_success')}
               </p>
-              <p className="text-sm text-center text-white/80">
-                {getText('auth_check_spam')} <br />
-                {getText('auth_resend_prompt')}
+            )}
+            {resendError && (
+              <p className="text-red-100 text-sm text-center pt-1">
+                {resendError}
               </p>
-              <div className="mt-4 flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={handleResend}
-                  disabled={resending}
-                  className="w-full py-2 rounded bg-purple-700 hover:bg-purple-800 transition disabled:opacity-50"
-                >
-                  {resending ? getText('auth_resending') : getText('auth_resend_button')}
-                </button>
-                {resendSuccess && (
-                  <p className="text-green-400 text-sm text-center">
-                    {getText('auth_resend_success')}
-                  </p>
-                )}
-                {resendError && (
-                  <p className="text-red-400 text-sm text-center">{resendError}</p>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
-              {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2 rounded bg-purple-600 hover:bg-purple-700 transition disabled:opacity-50"
-              >
-                {getText('auth_register_button')}
-              </button>
-            </>
-          )}
-        </form>
-      </main>
-    </>
+            )}
+          </>
+        ) : (
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2 rounded-md text-sm font-semibold text-white mt-2 bg-[#574964] hover:bg-[#473757] transition disabled:opacity-60"
+          >
+            {getText('auth_register_button')}
+          </button>
+        )}
+      </form>
+    </main>
   );
 }

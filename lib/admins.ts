@@ -1,1 +1,1 @@
-export const admins = ["link"];
+export const admins = ["link", "angela", "maohai"];

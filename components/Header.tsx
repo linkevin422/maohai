@@ -23,6 +23,8 @@ export default function Header() {
   const [remember, setRemember] = useState(false);
 
   const userMenuRef = useRef<HTMLDivElement | null>(null);
+  const loginRef = useRef<HTMLDivElement | null>(null);
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -42,6 +44,17 @@ export default function Header() {
     if (userMenuOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [userMenuOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (loginRef.current && !loginRef.current.contains(event.target as Node)) {
+        setLoginOpen(false);
+      }
+    };
+    if (loginOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [loginOpen]);
+  
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,75 +159,77 @@ export default function Header() {
       </div>
 
       {loginOpen && (
-        <div className="absolute right-4 top-[72px] w-80 bg-[#FFF6EF] border border-[#C8AAAA] rounded-xl p-4 shadow-xl z-50 text-[#574964]">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-sm font-bold">{getText('login_title')}</h2>
-            <button onClick={() => setLoginOpen(false)} className="hover:text-red-500 transition">
-              <X size={18} />
-            </button>
-          </div>
-          <form onSubmit={handleLogin} className="flex flex-col gap-3">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={getText('auth_email')}
-              className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
-              required
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={getText('auth_password')}
-              className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
-              required
-            />
-            <label className="flex items-center text-xs gap-2">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                className="accent-[#574964]"
-              />
-              {getText('auth_remember')}
-            </label>
+  <div
+    ref={loginRef}
+    className="absolute right-4 top-[72px] w-80 bg-[#FFF6EF] border border-[#C8AAAA] rounded-xl p-4 shadow-xl z-50 text-[#574964]"
+  >
+    <div className="flex justify-between items-center mb-3">
+      <h2 className="text-sm font-bold">{getText('login_title')}</h2>
+      <button onClick={() => setLoginOpen(false)} className="hover:text-red-500 transition">
+        <X size={18} />
+      </button>
+    </div>
+    <form onSubmit={handleLogin} className="flex flex-col gap-3">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder={getText('auth_email')}
+        className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
+        required
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder={getText('auth_password')}
+        className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
+        required
+      />
+      <label className="flex items-center text-xs gap-2">
+        <input
+          type="checkbox"
+          checked={remember}
+          onChange={(e) => setRemember(e.target.checked)}
+          className="accent-[#574964]"
+        />
+        {getText('auth_remember')}
+      </label>
 
-            {error && (
-              <div className="text-red-500 text-xs">
-                {error === 'Invalid login credentials'
-                  ? getText('auth_error_invalid_credentials')
-                  : error === 'User not found'
-                  ? getText('auth_error_user_not_found')
-                  : error === 'Email not confirmed'
-                  ? getText('auth_error_email_not_confirmed')
-                  : error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full py-2 mt-1 text-sm rounded bg-[#574964] hover:bg-[#9F8383] text-white transition"
-            >
-              {getText('auth_login_button')}
-            </button>
-
-            <Link
-              href="/forgot"
-              className="text-xs underline hover:text-[#9F8383] transition text-center"
-            >
-              {getText('auth_forgot')}
-            </Link>
-
-            <Link
-              href="/register"
-              className="text-xs underline hover:text-[#9F8383] transition text-center"
-            >
-              {getText('auth_register_button')}
-            </Link>
-          </form>
+      {error && (
+        <div className="text-red-500 text-xs">
+          {error === 'Invalid login credentials'
+            ? getText('auth_error_invalid_credentials')
+            : error === 'User not found'
+            ? getText('auth_error_user_not_found')
+            : error === 'Email not confirmed'
+            ? getText('auth_error_email_not_confirmed')
+            : error}
         </div>
       )}
-    </header>
+
+      <button
+        type="submit"
+        className="w-full py-2 mt-1 text-sm rounded bg-[#574964] hover:bg-[#9F8383] text-white transition"
+      >
+        {getText('auth_login_button')}
+      </button>
+
+      <Link
+        href="/forgot"
+        className="text-xs underline hover:text-[#9F8383] transition text-center"
+      >
+        {getText('auth_forgot')}
+      </Link>
+
+      <Link
+        href="/register"
+        className="text-xs underline hover:text-[#9F8383] transition text-center"
+      >
+        {getText('auth_register_button')}
+      </Link>
+    </form>
+  </div>
+)}    </header>
   );
 }
