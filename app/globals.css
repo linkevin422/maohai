@@ -18,3 +18,21 @@ body {
   bottom: 6rem !important;
   left: 1rem !important;
 }
+
+.ProseMirror {
+  min-height: 300px;
+  padding: 1rem;
+  line-height: 1.8;
+  font-size: 1rem;
+  outline: none !important;
+  border: none !important;
+  cursor: text;
+  white-space: pre-wrap;
+  word-break: break-word;
+  caret-color: black;
+}
+
+.ProseMirror:focus {
+  outline: none !important;
+}
+

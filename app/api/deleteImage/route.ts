@@ -33,9 +33,8 @@ export async function POST(req: Request) {
 
     if (data.result !== 'ok') {
       console.error('Cloudinary deletion failed:', data);
-      console.error('Cloudinary delete failed:', data);
       return NextResponse.json({ error: data }, { status: 500 });
-          }
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
