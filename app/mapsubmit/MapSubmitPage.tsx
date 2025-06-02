@@ -12,7 +12,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import EditHistoryModal from '@/components/EditHistoryModal';
 
-const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'park', 'shop', 'groomer'];
+const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'park', 'shop', 'groomer', 'reg'];
 
 const categoryFields: Record<Category, string[]> = {
   restaurant: ['petRoam', 'petBagOnly', 'indoorAllowed', 'outdoorSeating', 'petMenu', 'waterBowlProvided'],
@@ -22,6 +22,7 @@ const categoryFields: Record<Category, string[]> = {
   park: ['offLeashOk', 'fencedArea', 'waterBowlProvided'],
   shop: ['petRoam', 'petBagOnly', 'indoorAllowed', 'waterBowlProvided'],
   groomer: ['walkInOk', 'onlineBooking', 'hasParking'],
+  reg: [], // ✅ added to fix the TS error
 };
 
 function isValidGoogleMapsUrl(url: string): boolean {
