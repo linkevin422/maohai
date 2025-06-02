@@ -49,9 +49,11 @@ export default function RootLayout({
       </head>
       <body className="bg-zinc-950 text-white font-sans">
         <LanguageProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
+          <Header />
+          <div className="pt-[72px] pb-[40px] min-h-screen flex flex-col relative">
             <main className="flex-1">{children}</main>
+          </div>
+          <div className="fixed bottom-0 left-0 w-full z-50">
             <Footer />
           </div>
         </LanguageProvider>

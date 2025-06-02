@@ -5,14 +5,16 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
-import { uploadToCloudinary } from '@/lib/cloudinary';
+import { uploadToCloudinary, deleteFromCloudinary } from '@/lib/cloudinary';
 import { optimizeImage } from '@/lib/optimizeImage';
+import { extractImageIds } from '@/lib/extractImageIds';
+import { extractPublicId } from '@/lib/extractPublicId';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import CroppingModal from '@/components/CroppingModal';
-
-const supabase = createClientComponentClient();
 import slugify from 'slugify';
 import { admins } from '@/lib/admins';
+
+const supabase = createClientComponentClient();
 
 export default function BlogSubmitPage() {
   const router = useRouter();
@@ -25,6 +27,9 @@ export default function BlogSubmitPage() {
   const [title, setTitle] = useState('');
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [coverPublicId, setCoverPublicId] = useState<string | null>(null);
+  const [oldCoverPublicId, setOldCoverPublicId] = useState<string | null>(null);
+  const [oldInsertedImageIds, setOldInsertedImageIds] = useState<string[]>([]);
+
   const [category, setCategory] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tagList, setTagList] = useState<string[]>([]);
@@ -48,12 +53,8 @@ export default function BlogSubmitPage() {
       const username = data.user?.user_metadata?.username || null;
       setUserName(username);
       setAuthChecked(true);
-
-      if (!admins.includes(username || '')) {
-        router.push('/');
-      }
+      if (!admins.includes(username || '')) router.push('/');
     };
-
     checkUser();
   }, []);
 
@@ -78,11 +79,15 @@ export default function BlogSubmitPage() {
       setTitle(data.title);
       setCoverUrl(data.cover_image_url);
       setCoverPublicId(data.image_public_id);
+      setOldCoverPublicId(data.image_public_id); // for cleanup later
       setCategory(data.category || '');
       setTagList(data.tags || []);
       setThumbnailAlt(data.thumbnail_alt || '');
       setPinned(data.pinned || false);
       editor.commands.setContent(data.content || '');
+
+      const initialInserted = extractImageIds(data.content || '');
+      setOldInsertedImageIds(initialInserted);
       setLoading(false);
     };
 
@@ -103,7 +108,7 @@ export default function BlogSubmitPage() {
   const handleCroppedImage = async (blob: Blob) => {
     const file = new File([blob], 'cropped-image.webp', { type: 'image/webp', lastModified: Date.now() });
     const result = await uploadToCloudinary(file);
-        if (result) {
+    if (result) {
       setCoverUrl(result.url);
       setCoverPublicId(result.public_id);
     }
@@ -168,15 +173,27 @@ export default function BlogSubmitPage() {
       result = await supabase.from('blogs').insert({ ...postData, likes: 0 });
     }
 
-    setSubmitting(false);
-
     if (result.error) {
       console.error(result.error);
       alert('儲存失敗');
-    } else {
-      alert('已儲存！');
-      router.push('/blogadmin');
+      setSubmitting(false);
+      return;
     }
+
+    // 🧹 Cleanup orphaned images
+    const newInsertedIds = extractImageIds(content);
+    const toDelete = oldInsertedImageIds.filter(id => !newInsertedIds.includes(id));
+    for (const id of toDelete) {
+      await deleteFromCloudinary(id);
+    }
+
+    if (oldCoverPublicId && oldCoverPublicId !== coverPublicId) {
+      await deleteFromCloudinary(oldCoverPublicId);
+    }
+
+    setSubmitting(false);
+    alert('已儲存！');
+    router.push('/blogadmin');
   };
 
   if (!authChecked) return <p className="p-6 text-center text-gray-700">正在驗證身份…</p>;
@@ -192,15 +209,15 @@ export default function BlogSubmitPage() {
         <p className="text-center text-gray-500">載入中…</p>
       ) : (
         <div className="space-y-6 animate-fadein">
-<div className="flex justify-center">
-  <input
-    type="text"
-    placeholder="文章標題"
-    className="text-center w-full max-w-2xl px-6 py-4 text-2xl font-semibold border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition text-gray-900"
-    value={title}
-    onChange={(e) => setTitle(e.target.value)}
-  />
-</div>
+          <div className="flex justify-center">
+            <input
+              type="text"
+              placeholder="文章標題"
+              className="text-center w-full max-w-2xl px-6 py-4 text-2xl font-semibold border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition text-gray-900"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">封面上傳</label>
@@ -323,6 +340,7 @@ export default function BlogSubmitPage() {
           </button>
         </div>
       )}
+
       {rawImageForCrop && (
         <CroppingModal
           imageUrl={rawImageForCrop}
