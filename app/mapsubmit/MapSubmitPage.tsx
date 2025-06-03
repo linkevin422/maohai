@@ -204,118 +204,123 @@ export default function MapSubmitPage() {
 
   return (
     <>
-      <div className="bg-black text-white px-4 sm:px-6 md:px-8 pt-24 pb-32 max-w-2xl mx-auto space-y-10">
-        <h1 className="text-xl sm:text-2xl font-bold">{getText('mapsubmit_title')}</h1>
+<div className="bg-[#FFF6EF] px-4 sm:px-6 md:px-8 pt-24 pb-32 max-w-2xl mx-auto">
+  <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-6 border border-[#FFDAB3]">
+    <h1 className="text-xl sm:text-2xl font-bold text-[#574964]">
+      {getText('mapsubmit_title')}
+    </h1>
 
-        <div className="space-y-4">
-          <label className="block text-sm">{getText('mapsubmit_url')}</label>
-          <div className="flex gap-2">
-            <input
-              className="flex-1 px-3 py-2 text-black rounded"
-              type="text"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
-            <button
-              onClick={extractFromUrl}
-              type="button"
-              className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
-            >
-              {getText('mapsubmit_parse')}
-            </button>
-          </div>
-          {urlError && <div className="text-red-500 text-sm">{urlError}</div>}
+    <div className="space-y-4">
+      <label className="block text-sm text-[#574964]">{getText('mapsubmit_url')}</label>
+      <div className="flex gap-2">
+        <input
+          className="flex-1 px-3 py-2 rounded border border-[#C8AAAA] bg-[#FFF6EF] text-[#574964]"
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        <button
+          onClick={extractFromUrl}
+          type="button"
+          className="bg-[#5BBE82] hover:bg-[#4FA973] px-4 py-2 rounded text-white"
+        >
+          {getText('mapsubmit_parse')}
+        </button>
+      </div>
+      {urlError && <div className="text-red-500 text-sm">{urlError}</div>}
 
-          <label className="block text-sm">{getText('mapsubmit_name')}</label>
+      <label className="block text-sm text-[#574964]">{getText('mapsubmit_name')}</label>
+      <input
+        className="w-full px-3 py-2 rounded border border-[#C8AAAA] bg-[#FFF6EF] text-[#574964]"
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <label className="block text-sm text-[#574964]">{getText('mapsubmit_lat')}</label>
           <input
-            className="w-full px-3 py-2 text-black rounded"
+            className="w-full px-3 py-2 rounded border border-[#C8AAAA] bg-gray-100 text-[#574964]"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={lat}
+            onChange={(e) => setLat(e.target.value)}
+            readOnly={!!locationId}
           />
-
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block text-sm">{getText('mapsubmit_lat')}</label>
-              <input
-  className="w-full px-3 py-2 text-black rounded bg-gray-100"
-  type="text"
-  value={lat}
-  onChange={(e) => setLat(e.target.value)}
-  readOnly={!!locationId}
-/>
-            </div>
-            <div className="flex-1">
-              <label className="block text-sm">{getText('mapsubmit_lng')}</label>
-              <input
-  className="w-full px-3 py-2 text-black rounded bg-gray-100"
-  type="text"
-  value={lng}
-  onChange={(e) => setLng(e.target.value)}
-  readOnly={!!locationId}
-/>
-            </div>
-          </div>
-
-          <label className="block text-sm">{getText('mapsubmit_category')}</label>
-          <select
-            className="w-full px-3 py-2 text-black rounded"
-            value={category}
-            onChange={(e) => setCategory(e.target.value as Category)}
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {getText(`map_category_${cat}`)}
-              </option>
-            ))}
-          </select>
-
-          {categoryFields[category]?.length > 0 && (
-            <div>
-              <label className="block text-sm mb-2">{getText('mapsubmit_fields')}</label>
-              <div className="grid grid-cols-2 gap-2">
-                {categoryFields[category].map((key) => (
-                  <label key={key} className="inline-flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={fieldData[key] || false}
-                      onChange={() => toggleField(key)}
-                    />
-                    <span>{getText(`map_key_${key}`)}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold"
-          >
-            {submitting ? getText('mapsubmit_submitting') : getText('mapsubmit_submit')}
-          </button>
-
-          {success && <div className="text-green-400 mt-2">✅ {getText('mapsubmit_success')}</div>}
-
-          {locationId && (
-            <div className="text-center pt-6">
-              <button
-                onClick={() => setHistoryOpen(true)}
-                className="text-xs text-gray-400 underline hover:text-white"
-              >
-                {getText('mapsubmit_change_log')}
-              </button>
-
-              <EditHistoryModal
-                locationId={locationId}
-                open={historyOpen}
-                onClose={() => setHistoryOpen(false)}
-              />
-            </div>
-          )}
+        </div>
+        <div className="flex-1">
+          <label className="block text-sm text-[#574964]">{getText('mapsubmit_lng')}</label>
+          <input
+            className="w-full px-3 py-2 rounded border border-[#C8AAAA] bg-gray-100 text-[#574964]"
+            type="text"
+            value={lng}
+            onChange={(e) => setLng(e.target.value)}
+            readOnly={!!locationId}
+          />
         </div>
       </div>
+
+      <label className="block text-sm text-[#574964]">{getText('mapsubmit_category')}</label>
+      <select
+        className="w-full px-3 py-2 rounded border border-[#C8AAAA] bg-[#FFF6EF] text-[#574964]"
+        value={category}
+        onChange={(e) => setCategory(e.target.value as Category)}
+      >
+        {categories.map((cat) => (
+          <option key={cat} value={cat}>
+            {getText(`map_category_${cat}`)}
+          </option>
+        ))}
+      </select>
+
+      {categoryFields[category]?.length > 0 && (
+        <div>
+          <label className="block text-sm mb-2 text-[#574964]">{getText('mapsubmit_fields')}</label>
+          <div className="grid grid-cols-2 gap-2">
+            {categoryFields[category].map((key) => (
+              <label key={key} className="inline-flex items-center gap-2 text-[#574964]">
+                <input
+                  type="checkbox"
+                  checked={fieldData[key] || false}
+                  onChange={() => toggleField(key)}
+                />
+                <span>{getText(`map_key_${key}`)}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={handleSubmit}
+        disabled={submitting}
+        className="w-full bg-[#574964] hover:bg-[#453A51] text-white font-semibold py-2 rounded"
+      >
+        {submitting ? getText('mapsubmit_submitting') : getText('mapsubmit_submit')}
+      </button>
+
+      {success && <div className="text-green-600 font-medium mt-2">✅ {getText('mapsubmit_success')}</div>}
+
+      {locationId && (
+        <div className="text-center pt-6">
+          <button
+            onClick={() => setHistoryOpen(true)}
+            className="text-xs text-[#9F8383] underline hover:text-[#574964]"
+          >
+            {getText('mapsubmit_change_log')}
+          </button>
+
+          <EditHistoryModal
+            locationId={locationId}
+            open={historyOpen}
+            onClose={() => setHistoryOpen(false)}
+          />
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
     </>
   );
 }
