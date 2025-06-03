@@ -316,82 +316,97 @@ export default function Map({
               }
             >
 <Popup autoPan={true} autoPanPadding={[20, 100]}>
-  <div className="font-semibold text-base mb-1">
-    {pin.google_maps_url ? (
-      <a
-        href={pin.google_maps_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 underline hover:opacity-80"
-        onClick={() => {
-          supabase
-            .from('locations')
-            .update({ click_count: (pin.click_count || 0) + 1 })
-            .eq('id', pin.id);
-        }}
-      >
-        {pin.name}
-      </a>
-    ) : (
-      <span>{pin.name}</span>
+  <div className="min-w-[220px] max-w-[300px] space-y-2 text-[13px] text-gray-800">
+    <div className="font-semibold text-[15px] leading-tight">
+      {pin.google_maps_url ? (
+        <a
+          href={pin.google_maps_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline hover:opacity-80"
+          onClick={() => {
+            supabase
+              .from('locations')
+              .update({ click_count: (pin.click_count || 0) + 1 })
+              .eq('id', pin.id);
+          }}
+        >
+          {pin.name}
+        </a>
+      ) : (
+        <span>{pin.name}</span>
+      )}
+    </div>
+
+    {pin.address && (
+      <div className="text-gray-600 text-[13px]">{pin.address}</div>
+    )}
+
+    <div className="text-gray-500 text-xs italic">
+      {getText(`map_category_${pin.category}`)}
+    </div>
+
+    <ul className="space-y-1 mt-2">
+      {Object.entries(pin.data || {}).map(([k, v]) => {
+        const val = v as string | number | boolean;
+        const isPetSizeKey = k === 'maxPetSize' && typeof val === 'string';
+        const translated = isPetSizeKey ? getText(`map_size_${val}`) : val;
+
+        return (
+          <li
+            key={k}
+            className="flex justify-between items-center border-b border-gray-100 pb-1"
+          >
+            <span className="text-gray-500">{getText(`map_key_${k}`)}</span>
+            <span className="font-medium">
+              {typeof val === 'boolean' ? (
+                <span
+                  className={`inline-block w-2 h-2 rounded-full ${
+                    val ? 'bg-green-500' : 'bg-red-400'
+                  }`}
+                />
+              ) : (
+                translated
+              )}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+
+    {pin.category !== 'reg' && (
+      <div className="pt-2">
+        <button
+          onClick={() => {
+            if (user) {
+              const params = new URLSearchParams({
+                id: pin.id,
+                name: pin.name,
+                category: pin.category,
+              }).toString();
+              router.push(`/mapsubmit?${params}`);
+            } else {
+              supabaseClient.auth.getUser().then(({ data }) => {
+                if (data.user) {
+                  const params = new URLSearchParams({
+                    id: pin.id,
+                    name: pin.name,
+                    category: pin.category,
+                  }).toString();
+                  router.push(`/mapsubmit?${params}`);
+                } else {
+                  router.push('/register');
+                }
+              });
+            }
+          }}
+          className="text-blue-600 underline text-xs hover:opacity-80"
+        >
+          {getText('map_popup_suggest_edit')}
+        </button>
+      </div>
     )}
   </div>
-
-  {pin.address && (
-    <div className="text-sm text-gray-700 mb-1">📍 {pin.address}</div>
-  )}
-
-  <div className="text-xs text-gray-500 mb-2">
-    {getText(`map_category_${pin.category}`)}
-  </div>
-
-  <ul className="text-sm text-gray-800 space-y-1">
-    {Object.entries(pin.data || {}).map(([k, v]) => {
-      const val = v as string | number | boolean;
-      const isPetSizeKey = k === 'maxPetSize' && typeof val === 'string';
-      const translated = isPetSizeKey ? getText(`map_size_${val}`) : val;
-      return (
-        <li key={k}>
-          {typeof val === 'boolean'
-            ? `${val ? '✅' : '❌'} ${getText(`map_key_${k}`)}`
-            : `🔹 ${getText(`map_key_${k}`)}: ${translated}`}
-        </li>
-      );
-    })}
-  </ul>
-
-  {pin.category !== 'reg' && (
-    <div className="mt-3">
-      <button
-        onClick={() => {
-          if (user) {
-            const params = new URLSearchParams({
-              id: pin.id,
-              name: pin.name,
-              category: pin.category,
-            }).toString();
-            router.push(`/mapsubmit?${params}`);
-          } else {
-            supabaseClient.auth.getUser().then(({ data }) => {
-              if (data.user) {
-                const params = new URLSearchParams({
-                  id: pin.id,
-                  name: pin.name,
-                  category: pin.category,
-                }).toString();
-                router.push(`/mapsubmit?${params}`);
-              } else {
-                router.push('/register');
-              }
-            });
-          }
-        }}
-        className="text-blue-600 underline text-xs hover:opacity-80"
-      >
-        {getText('map_popup_suggest_edit')}
-      </button>
-    </div>
-  )}
 </Popup>
             </Marker>
           ))}

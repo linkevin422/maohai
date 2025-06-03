@@ -178,8 +178,8 @@ register_title: {
   },
   
   map_popup_suggest_edit: {
-    en: "Suggest an Edit",
-    "zh-Hant": "建議修改",
+    en: "Edit",
+    "zh-Hant": "修改",
   },
 
   map_popup_add_location: {
