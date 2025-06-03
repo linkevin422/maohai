@@ -71,7 +71,7 @@ header_articles: {
 
 header_loveyou: {
   en: "Love You Always",
-  "zh-Hant": "永遠愛你",
+  "zh-Hant": "永遠愛你們",
 },
 
   header_map: {
@@ -557,9 +557,22 @@ about_line3: {
   "zh-Hant": "我們相信每一隻毛孩都值得被尊重。",
 },
 
-//footer
 
 // footer
+
+footer_reverify: {
+  'zh-Hant': '重新寄送驗證信',
+  en: 'Resend Verification Email',
+},
+footer_privacy: {
+  'zh-Hant': '隱私權政策',
+  en: 'Privacy Policy',
+},
+footer_terms: {
+  'zh-Hant': '使用者條款',
+  en: 'Terms of Use',
+},
+
 footer_email_placeholder: {
   en: "Enter your email to subscribe",
   "zh-Hant": "輸入你的 Email 訂閱最新消息",
@@ -743,6 +756,179 @@ related_posts_heading: {
   en: 'You might also like',
   'zh-Hant': '你可能也會喜歡',
 },
+
+//Privacy
+privacy_title: {
+  'zh-Hant': '隱私權政策',
+  en: 'Privacy Policy',
+},
+privacy_collect_title: {
+  'zh-Hant': '我們收集哪些資料？',
+  en: 'What We Collect',
+},
+privacy_collect_1: {
+  'zh-Hant': '註冊用戶的 Email',
+  en: 'Registered user email addresses',
+},
+privacy_collect_2: {
+  'zh-Hant': '使用地圖時的 GPS 位置（需使用者授權）',
+  en: 'GPS location when using the map (if authorized)',
+},
+privacy_collect_3: {
+  'zh-Hant': '用戶回報內容與意見（如店家資訊）',
+  en: 'User-submitted content and feedback (like pet place info)',
+},
+privacy_collect_4: {
+  'zh-Hant': '基本瀏覽資訊（例如：IP、瀏覽器類型）',
+  en: 'Basic browsing info (e.g. IP, browser type)',
+},
+privacy_use_title: {
+  'zh-Hant': '我們怎麼使用這些資料？',
+  en: 'How We Use It',
+},
+privacy_use_1: {
+  'zh-Hant': '驗證用戶身份並登入系統',
+  en: 'To verify user identity and log in',
+},
+privacy_use_2: {
+  'zh-Hant': '顯示附近相關地點（需位置資訊）',
+  en: 'To show nearby relevant locations (requires location)',
+},
+privacy_use_3: {
+  'zh-Hant': '優化平台內容與功能',
+  en: 'To improve site features and content',
+},
+privacy_use_4: {
+  'zh-Hant': '發送重要通知（選擇訂閱者）',
+  en: 'To send important updates (to subscribed users)',
+},
+privacy_dont_title: {
+  'zh-Hant': '我們不會做什麼',
+  en: 'What We Don’t Do',
+},
+privacy_dont_1: {
+  'zh-Hant': '不會販售或交換任何個人資料',
+  en: 'We never sell or trade personal data',
+},
+privacy_dont_2: {
+  'zh-Hant': '不會將資料提供給廣告商或第三方',
+  en: 'We don’t share data with advertisers or 3rd parties',
+},
+privacy_storage_title: {
+  'zh-Hant': '資料儲存與安全',
+  en: 'Storage & Security',
+},
+privacy_storage_1: {
+  'zh-Hant': '資料儲存在 Supabase，具備現代安全措施',
+  en: 'Data is stored in Supabase with modern security',
+},
+privacy_storage_2: {
+  'zh-Hant': '僅限管理員權限可存取後台數據',
+  en: 'Only admins can access backend data',
+},
+privacy_rights_title: {
+  'zh-Hant': '你的權利',
+  en: 'Your Rights',
+},
+privacy_rights_1: {
+  'zh-Hant': '可隨時聯絡我們刪除帳戶與資料',
+  en: 'You can contact us anytime to delete your account and data',
+},
+privacy_rights_2: {
+  'zh-Hant': '可選擇是否開啟 GPS 或訂閱通知',
+  en: 'You can choose whether to enable GPS or receive updates',
+},
+privacy_contact_title: {
+  'zh-Hant': '聯絡方式',
+  en: 'Contact',
+},
+privacy_contact_email: {
+  'zh-Hant': '有任何問題請寄信至 peijulink@gmail.com',
+  en: 'For any questions, email us at peijulink@gmail.com',
+},
+
+//terms
+terms_title: {
+  'zh-Hant': '使用者條款',
+  en: 'Terms of Use',
+},
+terms_intro_title: {
+  'zh-Hant': '平台目的',
+  en: 'Platform Purpose',
+},
+terms_intro_body: {
+  'zh-Hant': 'Maohai.tw 是一個社群驅動的寵物地圖與工具平台，用戶可以探索、分享與回報寵物友善地點。',
+  en: 'Maohai.tw is a community-driven pet map and tool platform where users can explore, share, and submit pet-friendly locations.',
+},
+terms_conduct_title: {
+  'zh-Hant': '用戶行為規範',
+  en: 'User Conduct Rules',
+},
+terms_conduct_1: {
+  'zh-Hant': '不得回報虛假地點或資訊。',
+  en: 'No fake locations or false information.',
+},
+terms_conduct_2: {
+  'zh-Hant': '不得散播仇恨言論、騷擾或人身攻擊。',
+  en: 'No hate speech, harassment, or personal attacks.',
+},
+terms_conduct_3: {
+  'zh-Hant': '不得張貼動物虐待相關內容（圖片、文字或玩笑）。',
+  en: 'No content related to animal abuse (photos, descriptions, or jokes).',
+},
+terms_conduct_4: {
+  'zh-Hant': '不得張貼任何違法內容或連結。',
+  en: 'No illegal content or external links to such content.',
+},
+terms_rights_title: {
+  'zh-Hant': '平台管理權',
+  en: 'Platform Rights',
+},
+terms_rights_body: {
+  'zh-Hant': '我們有權在不另行通知的情況下移除任何違反規範的內容，並封鎖濫用用戶，必要時會通報主管機關。',
+  en: 'We reserve the right to remove any violating content without notice, ban abusive users, and report to authorities if needed.',
+},
+terms_content_title: {
+  'zh-Hant': '用戶內容權利',
+  en: 'User-Submitted Content',
+},
+terms_content_body: {
+  'zh-Hant': '用戶投稿內容必須擁有合法權利，並同意授權我們在平台上公開顯示與使用，無需支付任何費用。',
+  en: 'You must own the rights to content you submit and grant us a free, worldwide license to display it on Maohai.tw.',
+},
+terms_disclaimer_title: {
+  'zh-Hant': '資訊免責聲明',
+  en: 'Accuracy Disclaimer',
+},
+terms_disclaimer_body: {
+  'zh-Hant': 'Maohai.tw 為社群貢獻平台，無法保證每筆資訊的正確性或完整性，用戶需自行判斷使用。',
+  en: 'Maohai.tw is a community platform and cannot guarantee the accuracy or completeness of information. Use at your own discretion.',
+},
+terms_liability_title: {
+  'zh-Hant': '責任限制',
+  en: 'Limitation of Liability',
+},
+terms_liability_body: {
+  'zh-Hant': '本平台對於使用本網站造成的任何損失、傷害或糾紛不負責任，包括但不限於錯誤資訊或第三方內容。',
+  en: 'We are not liable for any damages, injuries, or disputes arising from use of this site, including incorrect information or third-party content.',
+},
+terms_updates_title: {
+  'zh-Hant': '條款修改',
+  en: 'Terms Updates',
+},
+terms_updates_body: {
+  'zh-Hant': '我們可隨時修改條款，用戶繼續使用視為同意最新版規定。',
+  en: 'We may update these terms at any time. Continued use of the site constitutes acceptance of the updated terms.',
+},
+terms_contact_title: {
+  'zh-Hant': '聯絡方式',
+  en: 'Contact',
+},
+terms_contact_email: {
+  'zh-Hant': '如有問題請聯絡 peijulink@gmail.com',
+  en: 'For any questions, contact peijulink@gmail.com',
+},
+
 
 
 };
