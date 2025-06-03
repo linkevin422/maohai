@@ -534,28 +534,55 @@ city_Taitung: {
 },
 
 //about
-
-// inside translations.ts
 about_title: {
-  en: "About Maohai",
-  "zh-Hant": "關於毛孩",
+  'zh-Hant': '關於毛孩',
+  en: 'About Maohai',
 },
-about_description: {
-  en: "Maohai is Taiwan’s warmest pet map and tool platform. Built for real pet parents who treat their companions like family.",
-  "zh-Hant": "毛孩是全台最溫暖的寵物地圖與工具平台，給真正把毛孩當家人的你。",
+about_zh_1: {
+  'zh-Hant': 'Maohai.tw 是為台灣毛孩家庭做的地圖。',
+  en: '',
 },
-about_line1: {
-  en: "Created with love in Taiwan 🇹🇼.",
-  "zh-Hant": "誕生於台灣，滿滿的愛。",
+about_zh_2: {
+  'zh-Hant': '它標記真正歡迎寵物的地點。',
+  en: '',
 },
-about_line2: {
-  en: "No ads. No trackers. Just useful tools.",
-  "zh-Hant": "無廣告、無追蹤，只有實用的功能。",
+about_zh_3: {
+  'zh-Hant': '每一個地點都是像你一樣關心毛孩的人加上去的。',
+  en: '',
 },
-about_line3: {
-  en: "We believe every paw deserves respect.",
-  "zh-Hant": "我們相信每一隻毛孩都值得被尊重。",
+about_zh_4: {
+  'zh-Hant': '我們都希望毛孩在台灣生活得更自由、更自在。',
+  en: '',
 },
+about_zh_5: {
+  'zh-Hant': '不再受限，不再被拒絕。能陪你去更多地方，走得更滿，遠的剛好。',
+  en: '',
+},
+about_en_1: {
+  'zh-Hant': '',
+  en: 'Maohai.tw is a map for pet families in Taiwan.',
+},
+about_en_2: {
+  'zh-Hant': '',
+  en: 'It shows places that truly welcome animals.',
+},
+about_en_3: {
+  'zh-Hant': '',
+  en: 'Every place is added by someone who cares, like you.',
+},
+about_en_4: {
+  'zh-Hant': '',
+  en: 'We all want pets to live more freely and comfortably in Taiwan.',
+},
+about_en_5: {
+  'zh-Hant': '',
+  en: 'Fewer limits, fewer rejections. More places to go. Fuller walks. Just the right distance.',
+},
+about_contact: {
+  'zh-Hant': '聯絡信箱：peijulink@gmail.com',
+  en: 'Contact: peijulink@gmail.com',
+},
+
 
 
 // footer
