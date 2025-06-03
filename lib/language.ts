@@ -726,7 +726,23 @@ city_Matsu: {
   'zh-Hant': '馬祖'
 },
 
-//regi
+//blog slug
+reading_time_minutes: {
+  en: 'min read',
+  'zh-Hant': '分鐘閱讀',
+},
+admin_badge: {
+  en: 'admin',
+  'zh-Hant': '管理員',
+},
+edit_post: {
+  en: 'Edit post',
+  'zh-Hant': '編輯文章',
+},
+related_posts_heading: {
+  en: 'You might also like',
+  'zh-Hant': '你可能也會喜歡',
+},
 
 
 };

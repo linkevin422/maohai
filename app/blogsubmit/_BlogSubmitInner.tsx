@@ -42,12 +42,16 @@ export default function BlogSubmitPage() {
 
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [rawImageForCrop, setRawImageForCrop] = useState<string | null>(null);
+  const [insertingImage, setInsertingImage] = useState(false);
 
   const editor = useEditor({
     extensions: [StarterKit, Image],
     content: '',
     immediatelyRender: false,
   });
+
+  const [coverUploading, setCoverUploading] = useState(false);
+
 
   useEffect(() => {
     const checkUser = async () => {
@@ -108,14 +112,19 @@ export default function BlogSubmitPage() {
   };
 
   const handleCroppedImage = async (blob: Blob) => {
-    const file = new File([blob], 'cropped-image.webp', { type: 'image/webp', lastModified: Date.now() });
+    setCoverUploading(true);
+    const file = new File([blob], 'cropped-image.webp', {
+      type: 'image/webp',
+      lastModified: Date.now(),
+    });
     const result = await uploadToCloudinary(file);
     if (result) {
       setCoverUrl(result.url);
       setCoverPublicId(result.public_id);
     }
+    setCoverUploading(false);
   };
-
+  
   const handleInsertImage = async () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -123,12 +132,14 @@ export default function BlogSubmitPage() {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
+      setInsertingImage(true);
       const result = await uploadToCloudinary(file);
       if (result) editor?.commands.setImage({ src: result.url });
+      setInsertingImage(false);
     };
     input.click();
   };
-
+  
   const removeTag = (index: number) => {
     setTagList((prev) => prev.filter((_, i) => i !== index));
   };
@@ -232,13 +243,15 @@ export default function BlogSubmitPage() {
                 if (file) handleCoverUpload(file);
               }}
             />
-            {coverUrl && (
-              <img
-                src={optimizeImage(coverUrl)}
-                alt="封面"
-                className="mt-4 w-full object-cover rounded-lg shadow"
-              />
-            )}
+{coverUploading ? (
+  <p className="text-sm text-gray-500 mt-2">封面上傳中…</p>
+) : coverUrl && (
+  <img
+    src={optimizeImage(coverUrl)}
+    alt="封面"
+    className="mt-4 w-full object-cover rounded-lg shadow"
+  />
+)}
           </div>
 
           <div>
@@ -333,15 +346,19 @@ export default function BlogSubmitPage() {
           </label>
 
           <div className="bg-gray-50 border border-gray-300 rounded-lg p-4 shadow-sm space-y-2">
-            <div className="flex justify-between items-center">
-              <label className="font-medium text-gray-700">文章內容</label>
-              <button
-                onClick={handleInsertImage}
-                className="text-sm text-blue-600 hover:underline"
-              >
-                插入圖片
-              </button>
-            </div>
+          <div className="flex justify-between items-center">
+  <label className="font-medium text-gray-700">文章內容</label>
+  {insertingImage ? (
+    <span className="text-sm text-gray-500">圖片上傳中…</span>
+  ) : (
+    <button
+      onClick={handleInsertImage}
+      className="text-sm text-blue-600 hover:underline"
+    >
+      插入圖片
+    </button>
+  )}
+</div>
             <div className="bg-white rounded-lg border border-gray-300 shadow-sm">
               <EditorContent editor={editor} className="ProseMirror text-gray-800" />
             </div>
