@@ -37,27 +37,36 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-Hant" className="h-full">
-<head>
-  <link rel="icon" type="image/png" href="/favicon.png" sizes="any" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-</head>
+      <head>
+        <link rel="icon" type="image/png" href="/favicon.png" sizes="any" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-WL4JC1RLB5"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-WL4JC1RLB5');
+            `,
+          }}
+        />
+      </head>
       <body className="h-full bg-[#FFF6EF] text-[#574964] font-sans">
-      <LanguageProvider>
-  <div className="min-h-screen flex flex-col">
-    <Header />
-    <main className="flex-1 flex flex-col">
-      {children}
-    </main>
-    <Footer />
-  </div>
-</LanguageProvider>
+        <LanguageProvider>
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1 flex flex-col">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </LanguageProvider>
       </body>
     </html>
   );
