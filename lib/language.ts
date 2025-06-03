@@ -956,6 +956,16 @@ terms_contact_email: {
   en: 'For any questions, contact peijulink@gmail.com',
 },
 
+loveyou_title: {
+  en: "Pet Memorial",
+  'zh-Hant': "毛孩紀念館"
+},
+under_construction: {
+  en: "This page is under construction.",
+  'zh-Hant': "頁面施工中，敬請期待。"
+},
+
+
 
 
 };
