@@ -7,10 +7,10 @@ import { User } from '@supabase/supabase-js';
 import { useLanguage } from '@/lib/LanguageProvider';
 import { useText } from '@/lib/getText';
 import { Category } from '@/lib/useLocations';
-import { admins } from '@/lib/admins';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import EditHistoryModal from '@/components/EditHistoryModal';
+import { useRouter } from 'next/navigation';
+
+const router = useRouter();
 
 const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'park', 'shop', 'groomer', 'reg'];
 
@@ -126,9 +126,9 @@ export default function MapSubmitPage() {
     } else {
       setUrlError('');
     }
-
+  
     setSubmitting(true);
-
+  
     const payload = {
       pname: name,
       plat: parseFloat(lat),
@@ -137,9 +137,9 @@ export default function MapSubmitPage() {
       purl: url,
       pdata: fieldData,
     };
-
+  
     const { error } = await supabase.rpc('upsert_location', payload);
-
+  
     const { data: fetch } = await supabase
       .from('locations')
       .select('id')
@@ -147,21 +147,21 @@ export default function MapSubmitPage() {
       .eq('lat', parseFloat(lat))
       .eq('lng', parseFloat(lng))
       .maybeSingle();
-
+  
     const resolvedId = locationId || fetch?.id;
     if (!locationId && fetch?.id) setLocationId(fetch.id);
-
+  
     if (!error && user && resolvedId) {
       const editLog: Record<string, any> = { ...fieldData };
-
+  
       if (originalName !== name) {
         editLog.name = { before: originalName, after: name };
       }
-
+  
       if (originalUrl !== url) {
         editLog.url = { before: originalUrl, after: url };
       }
-
+  
       const { error: insertError } = await supabase.from('location_edits').insert({
         location_id: resolvedId,
         user_id: user.id,
@@ -170,16 +170,14 @@ export default function MapSubmitPage() {
         name,
         url,
       });
-      
+  
       if (insertError) {
         alert('❌ Failed to log edit:\n' + insertError.message);
-      } else {
-        alert('✅ Edit log inserted');
       }
     }
-
+  
     setSubmitting(false);
-
+  
     if (!error) {
       setSuccess(true);
       setUrl('');
@@ -187,21 +185,23 @@ export default function MapSubmitPage() {
       setLat('');
       setLng('');
       setFieldData({});
+      setTimeout(() => setSuccess(false), 4000); // Optional: auto-hide after 4s
     } else {
       alert('Submit failed');
     }
   };
 
-  if (!user || !admins.includes(user.user_metadata?.username || '')) {
-    return (
-      <>
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 pt-24">
-          <p>{getText('unauthorized_meow')}</p>
-        </div>
-      </>
-    );
+  
+  useEffect(() => {
+    if (user === null) {
+      router.push('/register');
+    }
+  }, [user]);
+  
+  if (user === null) {
+    return null; // wait for redirect
   }
-
+  
   return (
     <>
 <div className="bg-[#FFF6EF] px-4 sm:px-6 md:px-8 pt-24 pb-32 max-w-2xl mx-auto">

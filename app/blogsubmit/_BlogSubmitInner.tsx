@@ -12,6 +12,7 @@ import { extractPublicId } from '@/lib/extractPublicId';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import CroppingModal from '@/components/CroppingModal';
 import slugify from 'slugify';
+slugify.extend({ '／': '-', '～': '-', '！': '', '：': '', '，': '', '。': '' }); // optional: normalize punctuation
 import { admins } from '@/lib/admins';
 
 const supabase = createClientComponentClient();
@@ -44,6 +45,9 @@ export default function BlogSubmitPage() {
   const [rawImageForCrop, setRawImageForCrop] = useState<string | null>(null);
   const [insertingImage, setInsertingImage] = useState(false);
 
+  const [generatedSlug, setGeneratedSlug] = useState('');
+
+
   const editor = useEditor({
     extensions: [StarterKit, Image],
     content: '',
@@ -52,6 +56,39 @@ export default function BlogSubmitPage() {
 
   const [coverUploading, setCoverUploading] = useState(false);
 
+  const generateUniqueSlug = async (baseSlug: string): Promise<string> => {
+    let finalSlug = baseSlug;
+    let suffix = 1;
+  
+    while (true) {
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('id')
+        .eq('slug', finalSlug)
+        .maybeSingle();
+  
+      if (error) {
+        console.error('Slug check error:', error);
+        return baseSlug;
+      }
+  
+      if (!data) break;
+  
+      suffix += 1;
+      finalSlug = `${baseSlug}-${suffix}`;
+    }
+  
+    return finalSlug;
+  };
+
+  function customSlug(input: string): string {
+    return input
+      .trim()
+      .replace(/[\s\p{P}]+/gu, '-') // replace spaces and punctuation with -
+      .replace(/^-+|-+$/g, '') // trim leading/trailing dashes
+      .toLowerCase();
+  }
+  
 
   useEffect(() => {
     const checkUser = async () => {
@@ -153,8 +190,7 @@ export default function BlogSubmitPage() {
     setSubmitting(true);
 
     const content = editor.getHTML();
-    const slug = slugify(title, { lower: true });
-
+    const slug = generatedSlug || slugify(title, { lower: true, strict: false, remove: undefined });
     const { data: userData } = await supabase.auth.getUser();
     const user_id = userData.user?.id || null;
     const username = userData.user?.user_metadata?.username || '';
@@ -179,20 +215,20 @@ export default function BlogSubmitPage() {
       thumbnail_alt: thumbnailAlt,
       language,
     };
-
+    
     let result;
     if (editingId) {
       result = await supabase.from('blogs').update(postData).eq('id', editingId);
     } else {
       result = await supabase.from('blogs').insert({ ...postData, likes: 0 });
     }
-
+        
     if (result.error) {
       console.error(result.error);
       alert('儲存失敗');
       setSubmitting(false);
       return;
-    }
+    }    
 
     // 🧹 Cleanup orphaned images
     const newInsertedIds = extractImageIds(content);
@@ -229,9 +265,23 @@ export default function BlogSubmitPage() {
               placeholder="文章標題"
               className="text-center w-full max-w-2xl px-6 py-4 text-2xl font-semibold border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition text-gray-900"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+              onChange={async (e) => {
+                const value = e.target.value;
+                setTitle(value);
+                const rawSlug = customSlug(value);
+                console.log('Raw slug:', rawSlug);
+                const uniqueSlug = await generateUniqueSlug(rawSlug);
+                console.log('Generated unique slug:', uniqueSlug);
+                setGeneratedSlug(uniqueSlug);
+              }}
+                                                      />
           </div>
+          {generatedSlug && (
+  <p className="text-center text-sm text-gray-500 mt-2">
+    <span className="font-mono text-gray-700">/blog/{generatedSlug}</span>
+  </p>
+)}
+
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">封面上傳</label>
