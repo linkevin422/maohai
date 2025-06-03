@@ -94,28 +94,6 @@ export default function MapSubmitPage() {
     }
   }, [searchParams]);
 
-  const extractFromUrl = () => {
-    try {
-      const decoded = decodeURIComponent(url);
-      const latLngMatch = decoded.match(/!3d([\d.-]+)!4d([\d.-]+)/);
-      if (latLngMatch) {
-        setLat(latLngMatch[1]);
-        setLng(latLngMatch[2]);
-      } else {
-        const fallbackMatch = decoded.match(/@([\d.\-]+),([\d.\-]+)/);
-        if (fallbackMatch) {
-          setLat(fallbackMatch[1]);
-          setLng(fallbackMatch[2]);
-        }
-      }
-      const nameMatch = decoded.match(/\/place\/(.*?)\//);
-      if (nameMatch) {
-        setName(nameMatch[1].replace(/\+/g, ' '));
-      }
-    } catch {
-      alert('Invalid URL');
-    }
-  };
 
   const toggleField = (key: string) => {
     setFieldData((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -193,6 +171,35 @@ export default function MapSubmitPage() {
     }
   };
 
+  useEffect(() => {
+    if (!url) return;
+
+    const timeout = setTimeout(() => {
+      try {
+        const decoded = decodeURIComponent(url);
+        const latLngMatch = decoded.match(/!3d([\d.-]+)!4d([\d.-]+)/);
+        if (latLngMatch) {
+          setLat(latLngMatch[1]);
+          setLng(latLngMatch[2]);
+        } else {
+          const fallbackMatch = decoded.match(/@([\d.\-]+),([\d.\-]+)/);
+          if (fallbackMatch) {
+            setLat(fallbackMatch[1]);
+            setLng(fallbackMatch[2]);
+          }
+        }
+        const nameMatch = decoded.match(/\/place\/(.*?)\//);
+        if (nameMatch) {
+          setName(nameMatch[1].replace(/\+/g, ' '));
+        }
+      } catch {
+        // silent fail
+      }
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [url]);
+
   
   useEffect(() => {
     if (authChecked && user === null) {
@@ -213,21 +220,12 @@ export default function MapSubmitPage() {
 
     <div className="space-y-4">
       <label className="block text-sm text-[#574964]">{getText('mapsubmit_url')}</label>
-      <div className="flex gap-2">
-        <input
-          className="flex-1 px-3 py-2 rounded border border-[#C8AAAA] bg-[#FFF6EF] text-[#574964]"
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <button
-          onClick={extractFromUrl}
-          type="button"
-          className="bg-[#5BBE82] hover:bg-[#4FA973] px-4 py-2 rounded text-white"
-        >
-          {getText('mapsubmit_parse')}
-        </button>
-      </div>
+      <input
+        className="w-full px-3 py-2 rounded border border-[#C8AAAA] bg-[#FFF6EF] text-[#574964]"
+        type="text"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+      />
       {urlError && <div className="text-red-500 text-sm">{urlError}</div>}
 
       <label className="block text-sm text-[#574964]">{getText('mapsubmit_name')}</label>
@@ -292,10 +290,14 @@ export default function MapSubmitPage() {
         </div>
       )}
 
-      <button
+<button
         onClick={handleSubmit}
-        disabled={submitting}
-        className="w-full bg-[#574964] hover:bg-[#453A51] text-white font-semibold py-2 rounded"
+        disabled={submitting || !name.trim()}
+        className={`w-full font-semibold py-2 rounded ${
+          submitting || !name.trim()
+            ? 'bg-gray-400 cursor-not-allowed text-white'
+            : 'bg-[#574964] hover:bg-[#453A51] text-white'
+        }`}
       >
         {submitting ? getText('mapsubmit_submitting') : getText('mapsubmit_submit')}
       </button>
