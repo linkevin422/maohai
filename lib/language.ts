@@ -965,5 +965,10 @@ under_construction: {
   'zh-Hant': "頁面施工中，敬請期待。"
 },
 
+user_menu_submit_location: {
+  en: 'Submit a location',
+  'zh-Hant': '新增地點'
+},
+
 
 };

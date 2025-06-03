@@ -1,16 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
 import { useLanguage } from '@/lib/LanguageProvider';
 import { useText } from '@/lib/getText';
 import { Category } from '@/lib/useLocations';
 import EditHistoryModal from '@/components/EditHistoryModal';
-import { useRouter } from 'next/navigation';
-
-const router = useRouter();
 
 const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'park', 'shop', 'groomer', 'reg'];
 
@@ -22,7 +19,7 @@ const categoryFields: Record<Category, string[]> = {
   park: ['offLeashOk', 'fencedArea', 'waterBowlProvided'],
   shop: ['petRoam', 'petBagOnly', 'indoorAllowed', 'waterBowlProvided'],
   groomer: ['walkInOk', 'onlineBooking', 'hasParking'],
-  reg: [], // ✅ added to fix the TS error
+  reg: [],
 };
 
 function isValidGoogleMapsUrl(url: string): boolean {
@@ -35,10 +32,12 @@ function isValidGoogleMapsUrl(url: string): boolean {
 }
 
 export default function MapSubmitPage() {
+  const router = useRouter();
+  const supabase = createClientComponentClient();
   const { getText } = useText();
   const { lang } = useLanguage();
   const searchParams = useSearchParams();
-  const supabase = createClientComponentClient();
+  const [authChecked, setAuthChecked] = useState(false); // ✅ now inside component
 
   const [user, setUser] = useState<User | null>(null);
   const [url, setUrl] = useState('');
@@ -56,9 +55,12 @@ export default function MapSubmitPage() {
   const [historyOpen, setHistoryOpen] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null));
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user ?? null);
+      setAuthChecked(true);
+    });
   }, []);
-
+  
   useEffect(() => {
     const id = searchParams.get('id');
     const rawName = searchParams.get('name');
@@ -193,15 +195,14 @@ export default function MapSubmitPage() {
 
   
   useEffect(() => {
-    if (user === null) {
+    if (authChecked && user === null) {
       router.push('/register');
     }
-  }, [user]);
-  
-  if (user === null) {
-    return null; // wait for redirect
-  }
-  
+  }, [authChecked, user]);
+    
+  if (!authChecked) return null; // still checking auth
+  if (user === null) return null; // will redirect soon
+    
   return (
     <>
 <div className="bg-[#FFF6EF] px-4 sm:px-6 md:px-8 pt-24 pb-32 max-w-2xl mx-auto">

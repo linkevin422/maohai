@@ -113,14 +113,23 @@ export default function Header() {
                 <ChevronDown size={14} />
               </button>
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
-                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition">
-                    {getText('logout_button')}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+  <div className="absolute right-0 mt-2 w-40 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
+    <Link
+      href="/mapsubmit"
+      className="block w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition"
+    >
+      {getText('user_menu_submit_location')}
+    </Link>
+    <button
+      onClick={handleLogout}
+      className="w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition"
+    >
+      {getText('logout_button')}
+    </button>
+  </div>
+)}
+</div>
+)}
 
           <div className="relative">
             <button
