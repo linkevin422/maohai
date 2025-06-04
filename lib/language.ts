@@ -248,7 +248,7 @@ register_title: {
   map_key_dogFriendly: { en: "Dog-friendly", "zh-Hant": "適合狗" },
   map_key_maxPetSize: { en: "Max pet size", "zh-Hant": "最大寵物尺寸" },
   map_key_noiseTolerant: { en: "Tolerates barking", "zh-Hant": "接受吠叫聲" },
-  map_key_open24hr: { en: "Open 24/7", "zh-Hant": "全天營業" },
+  map_key_open24hr: { en: "Open 24/7", "zh-Hant": "24小時" },
   map_key_emergencyAvailable: { en: "Emergency services", "zh-Hant": "急診服務" },
   map_key_exoticsOk: { en: "Exotics welcome", "zh-Hant": "接受特殊寵物" },
   map_key_walkInOk: { en: "Walk-ins allowed", "zh-Hant": "可直接前往" },
@@ -434,7 +434,7 @@ mapsubmit_submitting: {
 },
 mapsubmit_success: {
   en: "Submission successful",
-  "zh-Hant": "成功送出"
+  "zh-Hant": "地圖更新成功！"
 },
 
   // mapsubmit batch

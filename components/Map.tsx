@@ -312,9 +312,16 @@ export default function Map({
                   ? pin.data?.petBagged
                     ? customIcons.restaurant_bagged
                     : customIcons.restaurant_roam
-                  : customIcons[pin.category as keyof typeof customIcons]
+                  : pin.category === 'vet' && pin.data?.open24hr
+                    ? L.icon({
+                        iconUrl: '/pins/pin_24vet.png',
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 36],
+                        popupAnchor: [0, -36],
+                      })
+                    : customIcons[pin.category as keyof typeof customIcons]
               }
-            >
+                          >
 <Popup autoPan={true} autoPanPadding={[20, 100]}>
   <div className="min-w-[220px] max-w-[300px] space-y-2 text-[13px] text-gray-800">
     <div className="font-semibold text-[15px] leading-tight">
