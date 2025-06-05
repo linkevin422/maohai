@@ -970,5 +970,59 @@ user_menu_submit_location: {
   'zh-Hant': '新增地點'
 },
 
+//article share
+
+share_label: {
+  en: 'Share:',
+  'zh-Hant': '分享：',
+},
+share_line: {
+  en: 'Share on LINE',
+  'zh-Hant': '分享到 LINE',
+},
+share_facebook: {
+  en: 'Share on Facebook',
+  'zh-Hant': '分享到 Facebook',
+},
+share_threads: {
+  en: 'Share on Threads',
+  'zh-Hant': '分享到 Threads',
+},
+share_copy: {
+  en: 'Copy link',
+  'zh-Hant': '複製連結',
+},
+copied: {
+  en: 'Copied',
+  'zh-Hant': '已複製',
+},
+
+//front page
+
+home_tagline: {
+    'zh-Hant': '探索台灣毛孩友善地點，一起打造更有愛的社會。',
+    en: 'Discover pet-friendly places in Taiwan and help build a more loving world.',
+  },
+home_goto_map_button: {
+  'zh-Hant': '前往地圖',
+  en: 'Go to Map',
+},
+home_updates_title: {
+  'zh-Hant': '最新公告',
+  en: 'Latest Updates',
+},
+home_update_1: {
+  'zh-Hant': '地圖更新中...',
+  en: 'Map updating...',
+},
+home_update_2: {
+  'zh-Hant': '提議準備中...',
+  en: 'Proposal in process...',
+},
+home_update_3: {
+  'zh-Hant': '敬請期待!',
+  en: 'Stay tuned!',
+},
+
 
 };

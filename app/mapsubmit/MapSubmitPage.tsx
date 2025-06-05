@@ -302,7 +302,7 @@ export default function MapSubmitPage() {
         {submitting ? getText('mapsubmit_submitting') : getText('mapsubmit_submit')}
       </button>
 
-      {success && <div className="text-green-600 font-medium mt-2"> {getText('mapsubmit_success')}</div>}
+      {success && <div className="text-green-600 font-medium mt-2">   {getText('mapsubmit_success')}</div>}
 
       {locationId && (
         <div className="text-center pt-6">

@@ -1,3 +1,4 @@
+// app/map/page.tsx
 'use client';
 
 import dynamic from 'next/dynamic';
@@ -10,7 +11,6 @@ export default function MapPage() {
   const [category, setCategory] = useState<Category>('restaurant');
   const [clientReady, setClientReady] = useState(false);
 
-  // prevent hydration mismatch
   useEffect(() => {
     setClientReady(true);
   }, []);
@@ -19,7 +19,6 @@ export default function MapPage() {
 
   return (
     <div className="w-full" style={{ height: 'calc(100vh - 64px - 64px)' }}>
-      {/* adjust the 64px heights if your header/footer are different */}
       <Map selectedCategory={category} setSelectedCategory={setCategory} />
     </div>
   );
