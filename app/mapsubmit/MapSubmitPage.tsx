@@ -13,7 +13,7 @@ const categories: Category[] = ['restaurant', 'vet', 'hotel', 'human_hotel', 'pa
 
 const categoryFields: Record<Category, string[]> = {
   restaurant: ['petRoam', 'petBagOnly', 'indoorAllowed', 'outdoorSeating', 'petMenu', 'waterBowlProvided'],
-  vet: ['open24hr', 'emergencyAvailable', 'exoticsOk', 'walkInOk', 'onlineBooking', 'hasParking', 'inHouseLab'],
+  vet: ['open24hr', 'emergencyAvailable', 'exoticsOk', 'walkInOk', 'inHouseLab', 'byAppointment'],
   hotel: ['allowLargeDogs', 'petAmenities', 'petRoomService', 'separatePetRooms', 'canBeLeftAlone'],
   human_hotel: ['petAllowed', 'limitByWeight', 'additionalFee', 'canBeLeftAlone', 'waterBowlProvided'],
   park: ['offLeashOk', 'fencedArea', 'waterBowlProvided'],

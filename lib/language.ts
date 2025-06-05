@@ -285,6 +285,11 @@ register_title: {
     en: "Has pet-designated floors",
     "zh-Hant": "有寵物專屬樓層",
   },
+  map_key_byAppointment: {
+    en: 'By Appointment Only',
+    'zh-Hant': '預約制',
+  },
+  
 
   // suggestion modal
 suggestion_title: {
