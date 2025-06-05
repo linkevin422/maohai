@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageProvider';
 import { useText } from '@/lib/getText';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X, Globe } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
+
 
 export default function Header() {
   const { lang, setLang } = useLanguage();
@@ -131,33 +132,34 @@ export default function Header() {
 </div>
 )}
 
-          <div className="relative">
-            <button
-              onClick={() => setLanguageOpen(!languageOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#C8AAAA] bg-[#FFF6EF] hover:border-[#9F8383] transition"
-            >
-              <span>{languages.find((l) => l.code === lang)?.label}</span>
-              <ChevronDown size={14} />
-            </button>
-            {languageOpen && (
-              <div className="absolute right-0 mt-2 w-32 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
-                {languages.map((l) => (
-                  <button
-                    key={l.code}
-                    onClick={() => {
-                      setLang(l.code as 'en' | 'zh-Hant');
-                      setLanguageOpen(false);
-                    }}
-                    className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FFDAB3] transition ${
-                      l.code === lang ? 'bg-[#FFDAB3]' : ''
-                    }`}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+<div className="relative">
+  <button
+    onClick={() => setLanguageOpen(!languageOpen)}
+    className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#C8AAAA] bg-[#FFF6EF] hover:border-[#9F8383] transition"
+  >
+    <Globe size={16} />
+    <span>{languages.find((l) => l.code === lang)?.label}</span>
+    <ChevronDown size={14} />
+  </button>
+  {languageOpen && (
+    <div className="absolute right-0 mt-2 w-32 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
+      {languages.map((l) => (
+        <button
+          key={l.code}
+          onClick={() => {
+            setLang(l.code as 'en' | 'zh-Hant');
+            setLanguageOpen(false);
+          }}
+          className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FFDAB3] transition ${
+            l.code === lang ? 'bg-[#FFDAB3]' : ''
+          }`}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
         </nav>
       </div>
 

@@ -289,6 +289,16 @@ register_title: {
     en: 'By Appointment Only',
     'zh-Hant': '預約制',
   },
+  map_key_catOnly: {
+    en: 'Cat Only',
+    'zh-Hant': '限貓',
+  },
+  
+  map_key_dogOnly: {
+    en: 'Dog Only',
+    'zh-Hant': '限狗',
+  },
+  
   
 
   // suggestion modal
