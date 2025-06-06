@@ -272,7 +272,7 @@ register_title: {
   },
   form_submit: {
     en: 'Submit memorial',
-    'zh-Hant': '提交紀念',
+    'zh-Hant': '送出',
   },
   form_update: {
     en: 'Update memorial',
@@ -678,53 +678,35 @@ city_Taitung: {
 
 //about
 about_title: {
-  'zh-Hant': '關於毛孩',
-  en: 'About Maohai',
+  'zh-Hant': '關於毛孩TW',
+  en: 'About Maohai.tw',
 },
-about_zh_1: {
-  'zh-Hant': 'Maohai.tw 是為台灣毛孩家庭做的地圖。',
-  en: '',
+about_1: {
+  'zh-Hant': 'Maohai.tw 是一群毛爸媽組成的社群，目標是讓毛孩在台灣生活得更自由、更被尊重。',
+  en: 'Maohai.tw is a community of pet parents, working to make life in Taiwan freer and more respectful for animals.',
 },
-about_zh_2: {
-  'zh-Hant': '它標記真正歡迎寵物的地點。',
-  en: '',
+about_2: {
+  'zh-Hant': '我們一起分享友善地點、整理資訊、提出建議，只為了讓這些短短的生命，能過得更快樂。',
+  en: 'We share friendly places, organize info, and push for change — all so these short lives can be a little happier.',
 },
-about_zh_3: {
-  'zh-Hant': '每一個地點都是像你一樣關心毛孩的人加上去的。',
-  en: '',
+about_3: {
+  'zh-Hant': '/map 地圖可以看到台灣各式各樣毛孩相關的地點，這是一個大家一起建立的地圖。註冊會員就可以新增地點。',
+  en: '/map shows pet-related locations across Taiwan. It’s built by all of us. Anyone can contribute by signing up.',
 },
-about_zh_4: {
-  'zh-Hant': '我們都希望毛孩在台灣生活得更自由、更自在。',
-  en: '',
+about_4: {
+  'zh-Hant': '/loveyou 永遠愛你們是給大家貼的毛孩的紀念館。',
+  en: '/loveyou is a memorial wall for remembering pets we’ve loved and lost.',
 },
-about_zh_5: {
-  'zh-Hant': '不再受限，不再被拒絕。能陪你去更多地方，走得更滿，遠的剛好。',
-  en: '',
+about_5: {
+  'zh-Hant': '網站會持續更新！謝謝你的關愛。',
+  en: 'The site keeps growing — thank you for caring.',
 },
-about_en_1: {
-  'zh-Hant': '',
-  en: 'Maohai.tw is a map for pet families in Taiwan.',
+about_6: {
+  'zh-Hant': '— Link 林沛儒（開發者）',
+  en: '— "Link" Peiju Lin (Developer)',
 },
-about_en_2: {
-  'zh-Hant': '',
-  en: 'It shows places that truly welcome animals.',
-},
-about_en_3: {
-  'zh-Hant': '',
-  en: 'Every place is added by someone who cares, like you.',
-},
-about_en_4: {
-  'zh-Hant': '',
-  en: 'We all want pets to live more freely and comfortably in Taiwan.',
-},
-about_en_5: {
-  'zh-Hant': '',
-  en: 'Fewer limits, fewer rejections. More places to go. Fuller walks. Just the right distance.',
-},
-about_contact: {
-  'zh-Hant': '聯絡信箱：peijulink@gmail.com',
-  en: 'Contact: peijulink@gmail.com',
-},
+
+
 
 
 
