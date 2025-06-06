@@ -194,6 +194,125 @@ register_title: {
     'zh-Hant': '查看地圖',
     en: 'View Map',
   },
+
+  //memorial
+  memorial_title: {
+    'zh-Hant': '毛孩紀念館',
+    en: 'Memorial',
+  },
+  memorial_subtitle: {
+    'zh-Hant': '知道嗎？我們永遠愛你們。',
+    en: 'Wherever you are, know that we love you always.',
+  },
+  search_placeholder: {
+    'zh-Hant': '搜尋毛孩名字…',
+    en: 'Search pet name…',
+  },
+  remember_button: {
+    'zh-Hant': '我記得你',
+    en: 'I remember you',
+  },
+  note_label: {
+    'zh-Hant': '紀念文',
+    en: 'Message',
+  },
+  owner_label: {
+    'zh-Hant': '飼主',
+    en: 'Owner',
+  },
+  close_button: {
+    'zh-Hant': '關閉',
+    en: 'Close',
+  },
+  passed_in: {
+    'zh-Hant': '離開於',
+    en: 'Passed in',
+  },
+
+  //memorial submission
+  form_title: {
+    en: 'Remembering',
+    'zh-Hant': '紀念毛孩',
+  },
+  form_edit_title: {
+    en: 'Edit your memorial',
+    'zh-Hant': '編輯紀念內容',
+  },
+  form_image_label: {
+    en: 'Photo (1:1)',
+    'zh-Hant': '毛孩照片（1:1）',
+  },
+  form_image_hint: {
+    en: 'Click here to upload photo',
+    'zh-Hant': '點此上傳照片',
+  },
+  form_ready: {
+    en: 'Photo Ready',
+    'zh-Hant': '照片規格符合',
+  },
+  form_pet_name: {
+    en: 'Pet name *',
+    'zh-Hant': '毛孩名字 *',
+  },
+  form_owner_name: {
+    en: 'Owner name *',
+    'zh-Hant': '飼主名字 *',
+  },
+  form_birth_year: {
+    en: 'Birth year (optional)',
+    'zh-Hant': '出生年份（可留空）',
+  },
+  form_death_year: {
+    en: 'Year of passing *',
+    'zh-Hant': '過世年份 *',
+  },
+  form_note: {
+    en: 'Message (optional)',
+    'zh-Hant': '紀念文字（可留空）',
+  },
+  form_submit: {
+    en: 'Submit memorial',
+    'zh-Hant': '提交紀念',
+  },
+  form_update: {
+    en: 'Update memorial',
+    'zh-Hant': '更新紀念',
+  },
+  form_uploading: {
+    en: 'Uploading…',
+    'zh-Hant': '上傳中…',
+  },
+  form_error: {
+    en: 'Please fill all required fields and upload a photo',
+    'zh-Hant': '請填寫所有必填欄位並上傳照片',
+  },
+  upload_error: {
+    en: 'Image upload failed',
+    'zh-Hant': '圖片上傳失敗',
+  },
+  auth_error: {
+    en: 'You must be logged in',
+    'zh-Hant': '使用者未登入',
+  },
+  submit_error: {
+    en: 'Failed to save: ',
+    'zh-Hant': '資料儲存失敗：',
+  },
+
+    edit_button: {
+      'zh-Hant': '編輯',
+      en: 'Edit',
+    },
+    delete_button: {
+      'zh-Hant': '刪除',
+      en: 'Delete',
+    },
+    delete_confirm: {
+      'zh-Hant': '確定要刪除這份紀念嗎？這個動作無法復原。',
+      en: 'Are you sure you want to delete this memorial? This action cannot be undone.',
+    },
+    
+  
   
 
   // ===== SIZE =====
