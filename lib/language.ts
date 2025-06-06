@@ -58,6 +58,13 @@ export const translations: Record<string, { en: string; 'zh-Hant': string }> = {
     "zh-Hant": "驗證信已重新發送。",
   },  
   
+  //header
+
+  header_map: {
+    'zh-Hant': '地圖',
+    en: 'Map',
+  },
+  
 
 header_about: {
   en: "About",
@@ -74,10 +81,6 @@ header_loveyou: {
   "zh-Hant": "永遠愛你們",
 },
 
-  header_map: {
-    en: "Map",
-    "zh-Hant": "地圖",
-  },
   header_blog: {
     en: "Articles",
     "zh-Hant": "文章",
@@ -186,6 +189,12 @@ register_title: {
     en: "Add this location",
     "zh-Hant": "新增這個地點",
   },
+
+  mapsubmit_goto_map: {
+    'zh-Hant': '查看地圖',
+    en: 'View Map',
+  },
+  
 
   // ===== SIZE =====
   map_size_small: {
