@@ -40,7 +40,6 @@ export default function EditHistoryModal({ locationId, open, onClose }: Props) {
       .order('created_at', { ascending: false });
     
       if (error) {
-        console.error('❌ Failed to fetch logs:', error);
         setLogs([]);
       } else {
         setLogs(data || []);

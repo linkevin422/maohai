@@ -18,7 +18,6 @@ export default function CoverPickerModal({ open, onClose, onSelect }: Props) {
     fetch('/api/blogcoverimages')
       .then((res) => res.json())
       .then((data) => setImages(data))
-      .catch(console.error);
   }, []);
 
   return (

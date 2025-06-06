@@ -68,7 +68,6 @@ export default function BlogSubmitPage() {
         .maybeSingle();
   
       if (error) {
-        console.error('Slug check error:', error);
         return baseSlug;
       }
   
@@ -115,7 +114,6 @@ export default function BlogSubmitPage() {
         .single();
 
       if (error) {
-        console.error(error);
         return;
       }
 
@@ -224,7 +222,6 @@ export default function BlogSubmitPage() {
     }
         
     if (result.error) {
-      console.error(result.error);
       alert('儲存失敗');
       setSubmitting(false);
       return;
@@ -269,9 +266,7 @@ export default function BlogSubmitPage() {
                 const value = e.target.value;
                 setTitle(value);
                 const rawSlug = customSlug(value);
-                console.log('Raw slug:', rawSlug);
                 const uniqueSlug = await generateUniqueSlug(rawSlug);
-                console.log('Generated unique slug:', uniqueSlug);
                 setGeneratedSlug(uniqueSlug);
               }}
                                                       />

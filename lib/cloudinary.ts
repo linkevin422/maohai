@@ -11,14 +11,12 @@ export async function uploadToCloudinary(file: File): Promise<{ url: string; pub
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error('[Cloudinary Upload Error] HTTP', res.status, errorText);
       return null;
     }
 
     const data = await res.json();
 
     if (!data.secure_url || !data.public_id) {
-      console.error('[Cloudinary Upload Error] Missing fields in response:', data);
       return null;
     }
 
@@ -26,8 +24,7 @@ export async function uploadToCloudinary(file: File): Promise<{ url: string; pub
       url: data.secure_url,
       public_id: data.public_id,
     };
-  } catch (err) {
-    console.error('[Cloudinary Upload Error]', err);
+  } catch {
     return null;
   }
 }
@@ -41,20 +38,17 @@ export async function deleteFromCloudinary(public_id: string): Promise<boolean> 
     });
 
     if (!res.ok) {
-      const errText = await res.text();
-      console.error('[Cloudinary Delete Error]', res.status, errText);
+      await res.text();
       return false;
     }
 
     const result = await res.json();
     if (!result.success) {
-      console.error('[Cloudinary Delete Failed]', result);
       return false;
     }
 
     return true;
-  } catch (err) {
-    console.error('[Cloudinary Delete Exception]', err);
+  } catch {
     return false;
   }
 }

@@ -29,7 +29,6 @@ export default function AuthCallbackClient() {
       });
 
       if (error) {
-        console.error('Verification failed:', error.message);
         setStatus('error');
       } else {
         setStatus('success');

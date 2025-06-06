@@ -39,7 +39,6 @@ export default function CroppingModal({
       onCropComplete(blob);
       onClose();
     } catch (err) {
-      console.error('Crop error:', err);
     } finally {
       setProcessing(false);
     }

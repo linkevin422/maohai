@@ -20,7 +20,6 @@ export default function ReverificationPage() {
     .maybeSingle();
   
     if (error) {
-      console.error('Fetch failed:', error.message);
       setStatus('error');
       return;
     }
@@ -42,7 +41,6 @@ export default function ReverificationPage() {
     });
 
     if (resendError) {
-      console.error('Resend failed:', resendError.message);
       setStatus('error');
     } else {
       setStatus('resent');

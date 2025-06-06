@@ -32,13 +32,11 @@ export async function POST(req: Request) {
     const data = await res.json();
 
     if (data.result !== 'ok') {
-      console.error('Cloudinary deletion failed:', data);
       return NextResponse.json({ error: data }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('Unexpected error deleting image:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

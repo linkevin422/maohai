@@ -167,9 +167,7 @@ function GPSMarker({
         map.flyTo(coords, 16, { animate: true, duration: 1.5 });
         setTimeout(() => setVisible(true), 500);
       },
-      (err) => {
-        console.error('GPS error:', err);
-      }
+      () => {}
     );
   }, [gpsEnabled, map, setMapCenter]);
 
