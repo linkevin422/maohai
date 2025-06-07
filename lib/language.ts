@@ -722,6 +722,12 @@ about_6: {
 
 // footer
 
+footer_contact: {
+  en: 'Contact Us',
+  'zh-Hant': '聯絡我們',
+},
+
+
 footer_reverify: {
   'zh-Hant': '重新寄送驗證信',
   en: 'Resend Verification Email',
@@ -1258,6 +1264,84 @@ forum_title: {
   en: 'Maohai Forum',
   'zh-Hant': '毛孩講'
 },
+
+//contact
+
+contact_email_confirm: {
+  en: 'Confirm Your Email',
+  'zh-Hant': '再次輸入你的電子信箱',
+},
+contact_email_mismatch: {
+  en: 'Email addresses do not match.',
+  'zh-Hant': '兩次輸入的信箱不一致。',
+},
+
+
+contact_title: {
+  en: 'Contact Us',
+  'zh-Hant': '聯絡我們',
+},
+contact_email: {
+  en: 'Your Email',
+  'zh-Hant': '你的電子信箱',
+},
+contact_reason: {
+  en: 'Reason for Contact',
+  'zh-Hant': '聯絡原因',
+},
+contact_reason_placeholder: {
+  en: 'Please choose a reason',
+  'zh-Hant': '請選擇聯絡原因',
+},
+reason_general: {
+  en: 'General Inquiry',
+  'zh-Hant': '一般詢問',
+},
+reason_feedback: {
+  en: 'Feedback on the Platform',
+  'zh-Hant': '關於平台的回饋',
+},
+reason_issue: {
+  en: 'Report an Issue',
+  'zh-Hant': '回報問題',
+},
+reason_collab: {
+  en: 'Collaboration Request',
+  'zh-Hant': '合作邀約',
+},
+reason_remove: {
+  en: 'Content Removal Request',
+  'zh-Hant': '要求移除內容',
+},
+reason_other: {
+  en: 'Other',
+  'zh-Hant': '其他',
+},
+contact_message: {
+  en: 'Message',
+  'zh-Hant': '內容',
+},
+contact_message_placeholder: {
+  en: 'Write your message here...',
+  'zh-Hant': '請在此輸入內容...',
+},
+contact_submit: {
+  en: 'Send Message',
+  'zh-Hant': '送出訊息',
+},
+contact_sending: {
+  en: 'Sending...',
+  'zh-Hant': '發送中...',
+},
+contact_success: {
+  en: 'Message sent successfully!',
+  'zh-Hant': '訊息已成功送出！',
+},
+contact_error: {
+  en: 'Something went wrong. Please try again.',
+  'zh-Hant': '出了點問題，請再試一次。',
+},
+
 
 
 };

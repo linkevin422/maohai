@@ -24,6 +24,9 @@ export default function Footer() {
             <Link href="/policy/terms" className="hover:underline">
               {getText('footer_terms')}
             </Link>
+            <Link href="/contact" className="hover:underline">
+              {getText('footer_contact')}
+            </Link>
           </div>
           <button
             onClick={() => setShowModal(true)}
