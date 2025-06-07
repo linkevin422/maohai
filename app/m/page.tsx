@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { fetchPosts, Post } from '@/lib/forum';
 import PostCard from '@/components/PostCard';
 import NewPostModal from '@/components/NewPostModal';
@@ -16,9 +16,22 @@ export default function ForumHomePage() {
   const [done, setDone] = useState(false);
   const [sort, setSort] = useState<SortKey>('new');
   const [showModal, setShowModal] = useState(false);
+  const [query, setQuery] = useState('');
   const sentinel = useRef<HTMLDivElement | null>(null);
 
-  // initial + sort change
+  /** 🔍 Filter posts locally as the user types (“insta-search”). */
+  const filteredPosts = useMemo(() => {
+    if (query.trim() === '') return posts;
+    const q = query.trim().toLowerCase();
+    return posts.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.content.toLowerCase().includes(q) ||
+        (p.profiles?.username ?? '').toLowerCase().includes(q),
+    );
+  }, [posts, query]);
+
+  /** Initial load + when sort changes. */
   useEffect(() => {
     setPosts([]);
     setDone(false);
@@ -26,7 +39,7 @@ export default function ForumHomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
-  // infinite scroll
+  /** Infinite scroll. */
   useEffect(() => {
     if (done) return;
     const io = new IntersectionObserver(
@@ -43,18 +56,18 @@ export default function ForumHomePage() {
     setLoading(true);
     const last = reset ? null : cursor ?? getCursor();
     const batch = await fetchPosts({ sort, cursor: last ?? undefined });
-  
+
     setPosts((prev) => {
       if (reset) return batch;
       const seen = new Set(prev.map((p) => p.id));
       const uniq = batch.filter((b) => !seen.has(b.id));
       return [...prev, ...uniq];
     });
-  
+
     if (batch.length === 0) setDone(true);
     setLoading(false);
   };
-  
+
   const getCursor = () => {
     if (posts.length === 0) return null;
     if (sort === 'new') return posts[posts.length - 1].created_at;
@@ -74,6 +87,7 @@ export default function ForumHomePage() {
 
   return (
     <main className="w-full px-4 pt-8 mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
+      {/* header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Maohai Forum</h1>
         <button
@@ -85,7 +99,7 @@ export default function ForumHomePage() {
       </div>
 
       {/* sort tabs */}
-      <div className="flex gap-4 mb-6 text-xs sm:text-sm flex-wrap">
+      <div className="flex gap-4 mb-4 text-xs sm:text-sm flex-wrap">
         {(['new', 'top-week', 'top-month', 'top-all'] as SortKey[]).map((key) => (
           <button
             key={key}
@@ -101,9 +115,20 @@ export default function ForumHomePage() {
         ))}
       </div>
 
+      {/* search bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search posts…"
+          className="w-full px-4 py-2 rounded-full bg-white/10 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        />
+      </div>
+
       {/* post list */}
       <div className="flex flex-col gap-4">
-        {posts.map((p) => (
+        {filteredPosts.map((p) => (
           <PostCard key={p.id} post={p} />
         ))}
       </div>
@@ -116,6 +141,9 @@ export default function ForumHomePage() {
       )}
       {done && posts.length === 0 && (
         <div className="py-12 text-center text-neutral-500">No posts yet.</div>
+      )}
+      {query && filteredPosts.length === 0 && (
+        <div className="py-12 text-center text-neutral-500">No matches.</div>
       )}
 
       {/* modal */}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CommentNode,
   voteOnComment,
@@ -10,9 +10,12 @@ import {
   ChevronUp,
   ChevronDown,
   CornerDownRight,
+  Trash2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import TextareaAutosize from 'react-textarea-autosize';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { admins } from '@/lib/admins';
 
 type Profile = { username: string | null };
 
@@ -23,12 +26,34 @@ interface Props {
 }
 
 export default function Comment({ node, depth = 0, postId }: Props) {
+  const supabase = createClientComponentClient();
+
   const [collapsed, setCollapsed] = useState(false);
   const [score, setScore] = useState(node.score);
   const [myVote, setMyVote] = useState<1 | -1 | 0>(0);
   const [replying, setReplying] = useState(false);
   const [text, setText] = useState('');
 
+  const [canDelete, setCanDelete] = useState(false);
+
+  /* ───────────────── permissions ───────────────── */
+  useEffect(() => {
+    (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const username =
+          (user.user_metadata?.username as string | undefined) ?? '';
+        setCanDelete(
+          user.id === node.user_id || admins.includes(username.toLowerCase()),
+        );
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* ───────────────── voting ───────────────── */
   const voting = async (val: 1 | -1) => {
     const next = myVote === val ? 0 : val;
     await voteOnComment(node.id, next);
@@ -36,6 +61,7 @@ export default function Comment({ node, depth = 0, postId }: Props) {
     setMyVote(next);
   };
 
+  /* ───────────────── reply ───────────────── */
   const submit = async () => {
     if (!text.trim()) return;
     await createComment({
@@ -46,31 +72,43 @@ export default function Comment({ node, depth = 0, postId }: Props) {
     window.location.reload();
   };
 
+  /* ───────────────── delete (soft-delete) ───────────────── */
+  const handleDelete = async () => {
+    if (!confirm('Delete this comment?')) return;
+
+    const { error } = await supabase
+      .from('forum_comments')
+      .update({ is_deleted: true, visible: false })
+      .eq('id', node.id);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    window.location.reload();
+  };
+
   const hidden = score < -7;
+  const indent = depth * 16; // px
 
   return (
-    <div className="relative">
-      {/* collapse bar */}
+    <div className="relative" style={{ marginLeft: indent }}>
+      {/* collapse bar – single elegant bar, wider hit-area */}
       <button
-        className="absolute -left-2 top-0 h-full w-1 bg-neutral-600/50 hover:bg-neutral-400 transition-colors"
-        style={{ marginLeft: depth * 16 }}
+        className={`absolute left-0 top-0 h-full w-2 transition-colors ${
+          collapsed ? 'bg-neutral-600/30' : 'bg-neutral-600/50 hover:bg-neutral-400'
+        }`}
         onClick={() => setCollapsed(!collapsed)}
       />
 
-      <div
-        className={`ml-4 pl-2 border-l border-neutral-600/50 ${
-          collapsed ? 'opacity-50' : ''
-        }`}
-        style={{ marginLeft: depth * 16 }}
-      >
+      {/* content wrapper (no extra border now) */}
+      <div className="ml-3 pl-1">
         {/* header */}
         <div className="flex items-center gap-2 text-xs text-neutral-400">
           <span>{node.profiles?.username ?? 'anonymous'}</span>
           <span>·</span>
           <span>
-            {formatDistanceToNow(new Date(node.created_at), {
-              addSuffix: true,
-            })}
+            {formatDistanceToNow(new Date(node.created_at), { addSuffix: true })}
           </span>
           {hidden && (
             <span className="italic ml-2">(hidden due to low score)</span>
@@ -85,6 +123,7 @@ export default function Comment({ node, depth = 0, postId }: Props) {
         {/* actions */}
         {!collapsed && (
           <div className="flex items-center gap-4 text-xs text-neutral-400">
+            {/* vote */}
             <div className="flex items-center gap-1 select-none">
               <button
                 onClick={() => voting(1)}
@@ -104,6 +143,8 @@ export default function Comment({ node, depth = 0, postId }: Props) {
                 <ChevronDown size={16} />
               </button>
             </div>
+
+            {/* reply */}
             <button
               onClick={() => setReplying(!replying)}
               className="flex items-center gap-1 hover:text-amber-500"
@@ -111,6 +152,17 @@ export default function Comment({ node, depth = 0, postId }: Props) {
               <CornerDownRight size={14} />
               Reply
             </button>
+
+            {/* delete (owner / admin) */}
+            {canDelete && (
+              <button
+                onClick={handleDelete}
+                className="flex items-center gap-1 hover:text-red-500"
+              >
+                <Trash2 size={14} />
+                Delete
+              </button>
+            )}
           </div>
         )}
 
@@ -120,9 +172,7 @@ export default function Comment({ node, depth = 0, postId }: Props) {
             <TextareaAutosize
               minRows={2}
               value={text}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setText(e.target.value)
-              }
+              onChange={(e) => setText(e.target.value)}
               className="w-full rounded-lg bg-neutral-800 p-2 text-sm"
               placeholder="Write your reply…"
             />

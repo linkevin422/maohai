@@ -133,21 +133,23 @@ export async function deletePost(id: string) {
 //  2. COMMENTS
 // ───────────────────────────────────────────
 export async function fetchComments(postId: string) {
-  const { data, error } = await supabase
-    .from('forum_comments')
-    .select(
-      `
-      *,
-      profiles:profiles!forum_comments_user_id_fkey(username)
-    `,
-    )
-    .eq('post_id', postId)
-    .order('created_at', { ascending: true });
-
-  if (error) throw error;
-  return data as (Comment & { profiles: Profile })[];
-}
-
+    const { data, error } = await supabase
+      .from('forum_comments')
+      .select(
+        `
+        *,
+        profiles:profiles!forum_comments_user_id_fkey(username)
+      `,
+      )
+      .eq('post_id', postId)
+      .eq('is_deleted', false)                   // ← hide deleted rows
+      .eq('visible', true)                       // ← hide invisible rows
+      .order('created_at', { ascending: true });
+  
+    if (error) throw error;
+    return data as (Comment & { profiles: Profile })[];
+  }
+  
 export async function createComment(payload: NewComment) {
   const {
     data: { user },
