@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import { optimizeImage } from '@/lib/optimizeImage';
 import { useText } from '@/lib/getText';
 import { User } from '@supabase/supabase-js';
+import Head from 'next/head';
+
 
 type Memorial = {
   id: string;
@@ -92,8 +94,22 @@ export default function LoveYouGallery() {
 
   /* ------------------------------ UI ------------------------------------ */
   return (
-    <div className="max-w-screen-xl mx-auto px-6 py-12">
-      <h1 className="text-3xl md:text-4xl font-semibold text-center text-[#574964] mb-6 tracking-wide">
+    <>
+      <Head>
+        <title>永遠愛你們 LoveYouAlways | Maohai.tw</title>
+        <meta name="description" content="為離開的毛孩留下紀念，讓我們一起記得他們的名字與故事。" />
+        <meta property="og:title" content="永遠愛你們 LoveYouAlways | Maohai.tw" />
+        <meta property="og:description" content="為離開的毛孩留下紀念，讓我們一起記得他們的名字與故事。" />
+        <meta property="og:image" content="https://maohai.tw/og-image.jpg" />
+        <meta property="og:url" content="https://maohai.tw/loveyou" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="永遠愛你們 LoveYouAlways | Maohai.tw" />
+        <meta name="twitter:description" content="為離開的毛孩留下紀念，讓我們一起記得他們的名字與故事。" />
+        <meta name="twitter:image" content="https://maohai.tw/og-image.jpg" />
+      </Head>
+  
+      <div className="max-w-screen-xl mx-auto px-6 py-12">
+        <h1 className="text-3xl md:text-4xl font-semibold text-center text-[#574964] mb-6 tracking-wide">
         {getText('memorial_title')}
       </h1>
 
@@ -209,7 +225,8 @@ export default function LoveYouGallery() {
             </Dialog.Panel>
           )}
         </div>
-      </Dialog>
-    </div>
+        </Dialog>
+      </div>
+    </>
   );
 }
