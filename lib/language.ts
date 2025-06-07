@@ -698,8 +698,8 @@ about_4: {
   en: '/loveyou is a memorial wall for remembering pets we’ve loved and lost.',
 },
 about_5: {
-  'zh-Hant': '網站會持續更新！謝謝你的關愛。',
-  en: 'The site keeps growing — thank you for caring.',
+  'zh-Hant': '謝謝你對毛孩的關愛。',
+  en: 'Thank you, for your kindness and love for your pets.',
 },
 about_6: {
   'zh-Hant': '— Link 林沛儒（開發者）',
@@ -1148,6 +1148,68 @@ home_update_3: {
   'zh-Hant': '敬請期待!',
   en: 'Stay tuned!',
 },
+
+
+//m - post modal
+create_post: {
+  'zh-Hant': '發文',
+  en: 'Create Post',
+},
+post_title: {
+  'zh-Hant': '標題',
+  en: 'Post Title',
+},
+post_content: {
+  'zh-Hant': '內容',
+  en: 'Content',
+},
+post: {
+  'zh-Hant': '發佈',
+  en: 'Post',
+},
+posting: {
+  'zh-Hant': '發佈中…',
+  en: 'Posting…',
+},
+cancel: {
+  'zh-Hant': '取消',
+  en: 'Cancel',
+},
+error_required_fields: {
+  'zh-Hant': '標題和內容為必填',
+  en: 'Title and content are required',
+},
+
+ //m - main
+
+ sort_newest: {
+  'zh-Hant': '最新',
+  en: 'Newest',
+},
+sort_week: {
+  'zh-Hant': '本週最多讚',
+  en: 'Top This Week',
+},
+sort_month: {
+  'zh-Hant': '本月最多讚',
+  en: 'Top This Month',
+},
+sort_all: {
+  'zh-Hant': '歷史最多讚',
+  en: 'All Time Top',
+},
+load_more: {
+  'zh-Hant': '載入更多',
+  en: 'Load More',
+},
+
+//m - slug
+delete: {
+  'zh-Hant': '刪除',
+  en: 'Delete',
+},
+
+
 
 
 };

@@ -17,6 +17,15 @@ function LoveYouSubmitInner() {
   const editingId = searchParams.get('edit');
   const { getText } = useText();
 
+  /* ---------- ⛔ redirect if NOT authenticated ---------- */
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) router.replace('/register');
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [croppingOpen, setCroppingOpen] = useState(false);
@@ -204,6 +213,7 @@ function LoveYouSubmitInner() {
   
     router.push('/loveyou');
   }}
+
     className="mt-4 text-sm text-[#9F8383] underline underline-offset-2 hover:text-[#b87781] transition w-full text-center"
   >
     {getText('delete_button')}
