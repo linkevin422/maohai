@@ -7,6 +7,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        peach: {
+          50: '#FFF4ED',
+          100: '#FFDAB3',
+        },
+        mauve: '#C8AAAA',
+        'muted-mauve': '#9F8383',
+        'deep-plum': '#574964',
+      },
       typography: {
         DEFAULT: {
           css: {

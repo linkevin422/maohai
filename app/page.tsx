@@ -31,6 +31,11 @@ export default function HomePage() {
           >
             {getText('home_goto_map_button')}
           </Link>
+
+          {/* subtle login note */}
+         <p className="mt-3 text-xs sm:text-sm text-[#574964]/80 italic">
+            {getText('home_login_note')}
+          </p>
         </motion.div>
       </motion.div>
 

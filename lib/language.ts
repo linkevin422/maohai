@@ -60,6 +60,16 @@ export const translations: Record<string, { en: string; 'zh-Hant': string }> = {
   
   //header
 
+  home_login_note: {
+    'zh-Hant': '或是登入貢獻地圖！',
+    en: 'or log in to contribute to the map!'
+  },
+  
+  header_forum: {
+    'zh-Hant': '毛孩講',
+    en: 'Forum',
+  },
+  
   header_map: {
     'zh-Hant': '地圖',
     en: 'Map',
@@ -1209,7 +1219,45 @@ delete: {
   en: 'Delete',
 },
 
+anonymous_user: { en: 'anonymous', 'zh-Hant': '匿名' },
 
+title_placeholder:   { en: 'Title',                    'zh-Hant': '標題' },
+content_placeholder: { en: 'Content (markdown accepted)…', 'zh-Hant': '內容（支援 Markdown）…' },
+
+new_post:           { en: 'New Post',          'zh-Hant': '建立貼文' },
+m_search_placeholder: { en: 'Search posts…',     'zh-Hant': '搜尋貼文…' },
+no_posts:           { en: 'No posts yet.',     'zh-Hant': '目前沒有貼文' },
+no_matches:         { en: 'No matches.',       'zh-Hant': '沒有符合結果' },
+
+m_sort_newest:        { en: 'Newest',            'zh-Hant': '最新' },
+m_sort_top_week:      { en: 'Top · Week',        'zh-Hant': '熱門 · 本週' },
+m_sort_top_month:     { en: 'Top · Month',       'zh-Hant': '熱門 · 本月' },
+m_sort_top_all:       { en: 'Top · All Time',    'zh-Hant': '熱門 · 所有時間' },
+
+post_delete_confirm: { en: 'Delete this post? This cannot be undone.', 'zh-Hant': '刪除此貼文？此操作無法復原。' },
+delete_post_button:  { en: 'Delete Post',                              'zh-Hant': '刪除貼文' },
+comments_label:      { en: 'Comments',                                 'zh-Hant': '則留言' },
+
+reply_btn:                 { en: 'Reply',        'zh-Hant': '回覆' },
+delete_btn:                { en: 'Delete',       'zh-Hant': '刪除' },
+delete_comment_confirm:    { en: 'Delete this comment?', 'zh-Hant': '刪除此留言？' },
+hidden_low_score:          { en: 'hidden due to low score', 'zh-Hant': '因評分過低已隱藏' },
+write_reply_placeholder:   { en: 'Write your reply…',  'zh-Hant': '請輸入回覆…' },
+post_btn:                  { en: 'Post',         'zh-Hant': '發布' },
+
+add_comment_label:            { en: 'Add a comment',     'zh-Hant': '新增留言' },
+share_thoughts_placeholder:   { en: 'Share your thoughts…', 'zh-Hant': '分享你的想法…' },
+posting_btn:                  { en: 'Posting…',          'zh-Hant': '發布中…' },
+
+newest_toggle:    { en: 'Newest',    'zh-Hant': '最新' },
+top_toggle:       { en: 'Top',       'zh-Hant': '熱門' },
+expand_replies_btn:   { en: 'Read replies', 'zh-Hant': '展開回覆' },
+collapse_replies_btn: { en: 'Hide replies', 'zh-Hant': '隱藏回覆' },
+
+forum_title: {
+  en: 'Maohai Forum',
+  'zh-Hant': '毛孩講'
+},
 
 
 };

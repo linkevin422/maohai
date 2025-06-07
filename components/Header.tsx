@@ -100,6 +100,7 @@ export default function Header() {
 
         <nav className="hidden sm:flex items-center gap-5 text-sm font-medium relative">
   <Link href="/map" className="hover:text-[#7A5F5F] transition">{getText('header_map')}</Link>
+  <Link href="/m" className="hover:text-[#7A5F5F] transition">{getText('header_forum')}</Link>
   <Link href="/about" className="hover:text-[#7A5F5F] transition">{getText('header_about')}</Link>
   <Link href="/blog" className="hover:text-[#7A5F5F] transition">{getText('header_blog')}</Link>
   <Link href="/loveyou" className="hover:text-[#7A5F5F] transition">{getText('header_loveyou')}</Link>
@@ -167,6 +168,8 @@ export default function Header() {
       {mobileMenuOpen && (
   <div className="sm:hidden flex flex-col gap-2 px-4 pb-4 text-sm font-medium">
     <Link href="/map" className="hover:text-[#7A5F5F] transition">{getText('header_map')}</Link>
+    <Link href="/m" className="hover:text-[#7A5F5F] transition">{getText('header_forum')}</Link>
+
     <Link href="/about" className="hover:text-[#7A5F5F] transition">{getText('header_about')}</Link>
     <Link href="/blog" className="hover:text-[#7A5F5F] transition">{getText('header_blog')}</Link>
     <Link href="/loveyou" className="hover:text-[#7A5F5F] transition">{getText('header_loveyou')}</Link>
