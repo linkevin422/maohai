@@ -194,8 +194,9 @@ export default function Header() {
 
             {/* language selector in drawer */}
             <div className="pt-6 border-t border-[#E7D8D1]">
-              <span className="block mb-3 text-sm text-[#7A5F5F]">{getText('language')}</span>
-              {languages.map(l => (
+            <span className="block mb-3 text-sm text-[#7A5F5F] opacity-80">
+  🌐 {lang === 'zh-Hant' ? 'Select Language' : '語言'}
+</span>             {languages.map(l => (
                 <button
                   key={l.code}
                   onClick={() => { setLang(l.code as 'zh-Hant' | 'en'); }}
