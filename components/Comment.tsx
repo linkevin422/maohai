@@ -17,6 +17,8 @@ import { admins } from '@/lib/admins';
 import { useLanguage } from '@/lib/LanguageProvider';
 import { useText } from '@/lib/getText';
 
+import Image from 'next/image';
+
 /*──────── types */
 type Profile = { username: string | null };
 
@@ -107,20 +109,32 @@ export default function Comment({
       <div className="rounded-lg bg-white border border-zinc-200 shadow-sm p-4">
         {/* header */}
         <div className="flex items-center gap-2 text-xs text-zinc-500">
-          <span>{node.profiles?.username ?? getText('anonymous_user')}</span>
-          <span>·</span>
-          <span>
-            {formatDistanceToNow(new Date(node.created_at), {
-              addSuffix: true,
-              locale,
-            })}
-          </span>
-          {hidden && (
-            <span className="italic ml-2 text-zinc-400">
-              ({getText('hidden_low_score')})
-            </span>
-          )}
-        </div>
+  <span className="flex items-center gap-1">
+    {node.profiles?.username ?? getText('anonymous_user')}
+    {admins.includes((node.profiles?.username ?? '').toLowerCase()) && (
+      <Image
+        src="/check.svg"
+        alt={getText('admin_badge')}
+        title={getText('admin_badge')}
+        width={10}
+        height={10}
+        className="opacity-70"
+      />
+    )}
+  </span>
+  <span>·</span>
+  <span>
+    {formatDistanceToNow(new Date(node.created_at), {
+      addSuffix: true,
+      locale,
+    })}
+  </span>
+  {hidden && (
+    <span className="italic ml-2 text-zinc-400">
+      ({getText('hidden_low_score')})
+    </span>
+  )}
+</div>
 
         {/* body */}
         {!hidden && !collapsed && (

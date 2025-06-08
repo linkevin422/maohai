@@ -22,6 +22,8 @@ import { admins } from '@/lib/admins';
 import Comment from '@/components/Comment';
 import NewThreadReply from '@/components/NewThreadReply';
 
+import Image from 'next/image';
+
 /*──────────────── types */
 type Profile = { username: string | null };
 type PostWithProfile = Post & { profiles: Profile };
@@ -140,28 +142,45 @@ export default function ThreadPage() {
         <div className="flex-1">
           {canDelete && (
             <div ref={menuRef} className="absolute top-4 right-4">
-              <button onClick={() => setMenuOpen(!menuOpen)}
-                className="p-2 rounded-full hover:bg-zinc-100">
-                <MoreHorizontal size={20} />
-              </button>
-              {menuOpen && (
-                <div className="mt-2 w-40 bg-white border border-zinc-200 rounded-md shadow-lg">
-                  <button onClick={deletePost}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-zinc-50">
-                    {getText('delete_post_button')}
-                  </button>
-                </div>
-              )}
-            </div>
+  <div className="relative">
+    <button
+      onClick={() => setMenuOpen(!menuOpen)}
+      className="p-2 rounded-full hover:bg-zinc-100"
+    >
+      <MoreHorizontal size={20} />
+    </button>
+    {menuOpen && (
+      <div className="absolute right-0 mt-2 w-40 bg-white border border-zinc-200 rounded-md shadow-lg z-10">
+        <button
+          onClick={deletePost}
+          className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-zinc-50"
+        >
+          {getText('delete_post_button')}
+        </button>
+      </div>
+    )}
+  </div>
+</div>
           )}
 
           <h1 className="text-xl sm:text-2xl font-bold text-zinc-800 break-words">
             {post.title}
           </h1>
-          <div className="text-xs text-zinc-500 mt-2">
-            {post.profiles?.username ?? getText('anonymous_user')} ·{' '}
-            {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale })}
-          </div>
+          <div className="text-xs text-zinc-500 mt-2 flex items-center gap-1">
+  <span>{post.profiles?.username ?? getText('anonymous_user')}</span>
+  {admins.includes((post.profiles?.username ?? '').toLowerCase()) && (
+    <Image
+      src="/check.svg"
+      alt={getText('admin_badge')}
+      width={10}
+      height={1}
+      title={getText('admin_badge')}
+      className="opacity-70"
+    />
+  )}
+  · {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale })}
+</div>
+
           <div className="mt-4 whitespace-pre-wrap text-sm sm:text-base leading-relaxed text-zinc-800">
             {post.content}
           </div>

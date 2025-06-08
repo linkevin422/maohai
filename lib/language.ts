@@ -1239,7 +1239,7 @@ delete: {
 anonymous_user: { en: 'anonymous', 'zh-Hant': '匿名' },
 
 title_placeholder:   { en: 'Title',                    'zh-Hant': '標題' },
-content_placeholder: { en: 'Content (markdown accepted)…', 'zh-Hant': '內容（支援 Markdown）…' },
+content_placeholder: { en: 'Content…', 'zh-Hant': '內容…' },
 
 new_post:           { en: 'New Post',          'zh-Hant': '建立貼文' },
 m_search_placeholder: { en: 'Search posts…',     'zh-Hant': '搜尋貼文…' },

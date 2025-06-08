@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { ChevronUp, ChevronDown, MessageSquare } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhTW, enUS } from 'date-fns/locale';
+import Image from 'next/image';
 
 import { voteOnPost, Post } from '@/lib/forum';
 import { useText } from '@/lib/getText';
 import { useLanguage } from '@/lib/LanguageProvider';
+import { admins } from '@/lib/admins';
 
 type Profile = { username: string | null };
 type Props = { post: Post & { profiles: Profile } };
@@ -76,7 +78,19 @@ export default function PostCard({ post }: Props) {
             {post.title}
           </h3>
           <div className="text-xs text-zinc-500 mt-1 flex items-center gap-2">
-            <span>{post.profiles?.username ?? getText('anonymous_user')}</span>
+            <span className="flex items-center gap-1">
+              {post.profiles?.username ?? getText('anonymous_user')}
+              {admins.includes((post.profiles?.username ?? '').toLowerCase()) && (
+                <Image
+                  src="/check.svg"
+                  alt={getText('admin_badge')}
+                  title={getText('admin_badge')}
+                  width={10}
+                  height={10}
+                  className="opacity-80"
+                />
+              )}
+            </span>
             <span>·</span>
             <span>
               {formatDistanceToNow(new Date(post.created_at), {

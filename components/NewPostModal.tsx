@@ -10,7 +10,13 @@ import { createPost } from '@/lib/forum';
 import { slugify } from '@/lib/slugify';
 import { useText } from '@/lib/getText';
 
-export default function NewPostModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export default function NewPostModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
   const supabase = createClientComponentClient();
   const router = useRouter();
   const { getText } = useText();
@@ -22,8 +28,10 @@ export default function NewPostModal({ open, onClose }: { open: boolean; onClose
 
   useEffect(() => {
     if (open) {
+      // focus first field
       setTimeout(() => firstInput.current?.focus(), 0);
     } else {
+      // reset state when modal closes
       setTitle('');
       setContent('');
       setSaving(false);
@@ -34,7 +42,9 @@ export default function NewPostModal({ open, onClose }: { open: boolean; onClose
     if (!title.trim()) return;
     setSaving(true);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       router.push('/login');
       return;
@@ -65,10 +75,11 @@ export default function NewPostModal({ open, onClose }: { open: boolean; onClose
           bg-white dark:bg-zinc-900
           text-zinc-900 dark:text-white
           shadow-xl ring-1 ring-black/10 dark:ring-white/10
+          max-h-[90vh] flex flex-col overflow-hidden
         "
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-5 shrink-0">
           <h2 className="text-xl font-bold">{getText('create_post')}</h2>
           <button
             onClick={onClose}
@@ -79,36 +90,40 @@ export default function NewPostModal({ open, onClose }: { open: boolean; onClose
           </button>
         </div>
 
-        {/* Title */}
-        <input
-          ref={firstInput}
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder={getText('title_placeholder')}
-          className="
-            w-full mb-4 rounded-md px-4 py-2 text-sm
-            bg-zinc-100 dark:bg-zinc-800
-            placeholder-zinc-400 dark:placeholder-zinc-500
-            focus:outline-none focus:ring-2 focus:ring-amber-500
-          "
-        />
+        {/* Scrollable form body */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Title */}
+          <input
+            ref={firstInput}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder={getText('title_placeholder')}
+            className="
+              w-full mb-4 rounded-md px-4 py-2 text-sm
+              bg-zinc-100 dark:bg-zinc-800
+              placeholder-zinc-400 dark:placeholder-zinc-500
+              focus:outline-none focus:ring-2 focus:ring-amber-500
+            "
+          />
 
-        {/* Content */}
-        <TextareaAutosize
-          minRows={6}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder={getText('content_placeholder')}
-          className="
-            w-full rounded-md px-4 py-2 text-sm resize-none
-            bg-zinc-100 dark:bg-zinc-800
-            placeholder-zinc-400 dark:placeholder-zinc-500
-            focus:outline-none focus:ring-2 focus:ring-amber-500
-          "
-        />
+          {/* Content */}
+          <TextareaAutosize
+            minRows={6}
+            maxRows={12}          /* ⬅ limits growth */
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder={getText('content_placeholder')}
+            className="
+              w-full rounded-md px-4 py-2 text-sm resize-none
+              bg-zinc-100 dark:bg-zinc-800
+              placeholder-zinc-400 dark:placeholder-zinc-500
+              focus:outline-none focus:ring-2 focus:ring-amber-500
+            "
+          />
+        </div>
 
         {/* Actions */}
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-6 flex justify-end gap-3 shrink-0">
           <button
             onClick={onClose}
             className="
