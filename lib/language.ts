@@ -722,6 +722,11 @@ about_6: {
 
 // footer
 
+footer_thanks_support: {
+  'zh-Hant': '感謝你支持這個網站。',
+  en: 'Thank you for supporting this project.',
+},
+
 footer_contact: {
   en: 'Contact Us',
   'zh-Hant': '聯絡我們',
@@ -1139,6 +1144,12 @@ copied: {
 },
 
 //front page
+
+home_register_button: {
+    "en": "Register",
+    "zh-Hant": "註冊"
+  },
+
 
 home_tagline: {
     'zh-Hant': '探索台灣毛孩友善地點，一起打造更有愛的社會。',

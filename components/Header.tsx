@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageProvider';
 import { useText } from '@/lib/getText';
-import { Menu, X, ChevronDown, Globe, LogIn } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { ChevronDown, Menu, X, Globe } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
 
@@ -14,14 +14,20 @@ export default function Header() {
   const supabase = createClientComponentClient();
 
   const [user, setUser] = useState<User | null>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [remember, setRemember] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
 
+  const userMenuRef = useRef<HTMLDivElement | null>(null);
+  const loginRef = useRef<HTMLDivElement | null>(null);
   const languageRef = useRef<HTMLDivElement | null>(null);
-  const userMenuRef   = useRef<HTMLDivElement | null>(null);
 
-  // ─────────── auth tracking
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null));
     supabase.auth.onAuthStateChange((_, session) =>
@@ -29,184 +35,244 @@ export default function Header() {
     );
   }, []);
 
-  // ─────────── click-out handling
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (languageRef.current && !languageRef.current.contains(e.target as Node)) setLanguageOpen(false);
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+      if (loginRef.current && !loginRef.current.contains(e.target as Node)) {
+        setLoginOpen(false);
+      }
+      if (languageRef.current && !languageRef.current.contains(e.target as Node)) {
+        setLanguageOpen(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoginLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoginLoading(false);
+    if (error) {
+      setError(error.message);
+    } else {
+      setLoginOpen(false);
+      setEmail('');
+      setPassword('');
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setUserMenuOpen(false);
+  };
+
+  const username = user?.user_metadata?.username;
   const languages = [
+    { code: 'en', label: 'English' },
     { code: 'zh-Hant', label: '中文' },
-    { code: 'en',      label: 'English' },
   ];
 
   const navLinks = [
-    { href: '/map',      key: 'header_map' },
-    { href: '/m',        key: 'header_forum' },
-    { href: '/about',    key: 'header_about' },
-    { href: '/blog',     key: 'header_blog' },
-    { href: '/loveyou',  key: 'header_loveyou' },
+    { href: '/map', key: 'header_map' },
+    { href: '/m', key: 'header_forum' },
+    { href: '/about', key: 'header_about' },
+    { href: '/blog', key: 'header_blog' },
+    { href: '/loveyou', key: 'header_loveyou' },
   ];
 
-  // ────────────────────────────────────────────────────────────────
   return (
     <header className="w-full bg-[#FFF6EF] text-[#3A2B2B] border-b border-[#E7D8D1] z-50">
-      {/* TOP BAR  */}
-      <div className="mx-auto max-w-7xl flex items-center justify-between px-5 py-3 md:py-4">
+<div className="w-full px-4 py-4 relative flex items-center justify-between">
+  {/* Left: Logo */}
+  <Link href="/" className="flex items-baseline gap-1 group hover:opacity-90 transition">
+    <span className="text-3xl font-bold calligraphy">毛孩</span>
+    <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-[#7A5F5F] group-hover:text-[#574964] transition">
+      maohai.tw
+    </span>
+  </Link>
 
-        {/* ── mobile hamburger */}
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="md:hidden mr-2"
-          aria-label="Open Menu"
-        >
-          <Menu size={26} />
+  {/* Mobile Menu Button */}
+  <div className="sm:hidden">
+    <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+      {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+    </button>
+  </div>
+
+  {/* Center: Nav links */}
+  <nav className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center gap-5 text-sm font-medium">
+    {navLinks.map((link) => (
+      <Link key={link.href} href={link.href} className="hover:text-[#7A5F5F] transition">
+        {getText(link.key)}
+      </Link>
+    ))}
+  </nav>
+
+  {/* Right: Login + Language */}
+  <div className="hidden sm:flex items-center gap-4">
+    {!user ? (
+      <button onClick={() => setLoginOpen(!loginOpen)} className="hover:text-[#7A5F5F] transition">
+        {getText('auth_login_button')}
+      </button>
+    ) : (
+      <div className="relative" ref={userMenuRef}>
+        <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="hover:text-[#7A5F5F] transition flex items-center gap-2">
+          <span className="font-semibold">{username || 'User'}</span>
+          <ChevronDown size={14} />
         </button>
+        {userMenuOpen && (
+          <div className="absolute right-0 mt-2 w-40 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
+            <Link href="/mapsubmit" className="block w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition">
+              {getText('user_menu_submit_location')}
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition"
+            >
+              {getText('logout_button')}
+            </button>
+          </div>
+        )}
+      </div>
+    )}
 
-        {/* ── Logo */}
-        <Link href="/" className="flex items-baseline gap-1 group">
-          <span className="text-3xl font-bold calligraphy">毛孩</span>
-          {/* hide subtitle on phones */}
-          <span className="hidden md:inline text-[10px] font-light tracking-widest translate-y-[2px] text-[#7A5F5F] group-hover:text-[#574964] transition">
-            maohai.tw
-          </span>
-        </Link>
+    <div className="relative" ref={languageRef}>
+      <button
+        onClick={() => setLanguageOpen(!languageOpen)}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#C8AAAA] bg-[#FFF6EF] hover:border-[#9F8383] transition"
+      >
+        <Globe size={16} />
+        <span>{languages.find((l) => l.code === lang)?.label}</span>
+        <ChevronDown size={14} />
+      </button>
+      {languageOpen && (
+        <div className="absolute right-0 mt-2 w-32 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
+          {languages.map((l) => (
+            <button
+              key={l.code}
+              onClick={() => {
+                setLang(l.code as 'en' | 'zh-Hant');
+                setLanguageOpen(false);
+              }}
+              className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FFDAB3] transition ${
+                l.code === lang ? 'bg-[#FFDAB3]' : ''
+              }`}
+            >
+              {l.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
-        {/* ── Desktop nav centre */}
-        <nav className="hidden md:flex flex-1 justify-center items-center gap-7 text-sm font-medium">
-          {navLinks.map(l => (
-            <Link key={l.key} href={l.href} className="hover:text-[#7A5F5F] transition">
-              {getText(l.key)}
+      {mobileMenuOpen && (
+        <div className="sm:hidden flex flex-col gap-2 px-4 pb-4 text-sm font-medium">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-[#7A5F5F] transition">
+              {getText(link.key)}
             </Link>
           ))}
-        </nav>
 
-        {/* ── Right utilities */}
-        <div className="flex items-center gap-3">
-
-          {/* login / user avatar (mobile & desktop) */}
           {!user ? (
-            <Link href="/register" aria-label="Login" className="md:inline-flex hidden text-sm hover:text-[#7A5F5F] transition">
+            <button onClick={() => setLoginOpen(true)} className="hover:text-[#7A5F5F] transition">
               {getText('auth_login_button')}
-            </Link>
-          ) : (
-            <div className="relative hidden md:block" ref={userMenuRef}>
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-1 text-sm hover:text-[#7A5F5F] transition"
-              >
-                <span className="font-semibold">{user.user_metadata?.username || 'User'}</span>
-                <ChevronDown size={14}/>
-              </button>
-              {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-[#FFF6EF] border border-[#C8AAAA] rounded shadow z-50">
-                  <Link href="/mapsubmit" className="block w-full px-4 py-2 text-left text-sm hover:bg-[#FFDAB3] transition">
-                    {getText('user_menu_submit_location')}
-                  </Link>
-                  <button
-                    onClick={async () => { await supabase.auth.signOut(); setUser(null); setUserMenuOpen(false); }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition"
-                  >
-                    {getText('logout_button')}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Language selector – desktop only */}
-          <div className="relative hidden md:block" ref={languageRef}>
-            <button
-              onClick={() => setLanguageOpen(!languageOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm rounded border border-[#C8AAAA] hover:border-[#9F8383] transition"
-            >
-              <Globe size={16}/>
-              <span>{languages.find(l => l.code === lang)?.label}</span>
-              <ChevronDown size={14}/>
             </button>
-            {languageOpen && (
-              <div className="absolute right-0 mt-2 w-32 bg-[#FFF6EF] border border-[#C8AAAA] rounded shadow z-50">
-                {languages.map(l => (
-                  <button
-                    key={l.code}
-                    onClick={() => { setLang(l.code as 'zh-Hant' | 'en'); setLanguageOpen(false); }}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition ${lang === l.code ? 'bg-[#FFDAB3]' : ''}`}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* mobile login icon (shows even if desktop link hidden) */}
-          {!user && (
-            <Link href="/register" className="md:hidden" aria-label="Login">
-              <LogIn size={24}/>
-            </Link>
+          ) : (
+            <>
+              <Link href="/mapsubmit" className="hover:text-[#7A5F5F] transition">
+                {getText('user_menu_submit_location')}
+              </Link>
+              <button onClick={handleLogout} className="hover:text-[#7A5F5F] transition">
+                {getText('logout_button')}
+              </button>
+            </>
           )}
         </div>
-      </div>
+      )}
 
-      {/* ───────────────────────────────────────── MOBILE DRAWER */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden bg-[#FFF6EF] overflow-y-auto">
-          {/* top row */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#E7D8D1]">
-            <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold calligraphy">毛孩</span>
-            </Link>
-            <button onClick={() => setMobileOpen(false)} aria-label="Close Menu">
-              <X size={28}/>
+      {loginOpen && (
+        <div
+          ref={loginRef}
+          className="absolute right-4 top-[72px] w-80 bg-[#FFF6EF] border border-[#C8AAAA] rounded-xl p-4 shadow-xl z-50 text-[#574964]"
+        >
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-sm font-bold">{getText('login_title')}</h2>
+            <button onClick={() => setLoginOpen(false)} className="hover:text-red-500 transition">
+              <X size={18} />
             </button>
           </div>
+          <form onSubmit={handleLogin} className="flex flex-col gap-3">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={getText('auth_email')}
+              className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
+              required
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={getText('auth_password')}
+              className="px-3 py-2 rounded bg-[#FFDAB3] border border-[#C8AAAA] text-sm"
+              required
+            />
+            <label className="flex items-center text-xs gap-2">
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                className="accent-[#574964]"
+              />
+              {getText('auth_remember')}
+            </label>
 
-          {/* nav links */}
-          <nav className="flex flex-col px-6 py-8 gap-6 text-lg font-medium">
-            {navLinks.map(l => (
-              <Link key={l.key} href={l.href} onClick={() => setMobileOpen(false)} className="hover:text-[#7A5F5F] transition">
-                {getText(l.key)}
-              </Link>
-            ))}
-
-            {/* submit + logout OR login */}
-            {user ? (
-              <>
-                <Link href="/mapsubmit" onClick={() => setMobileOpen(false)} className="hover:text-[#7A5F5F] transition">
-                  {getText('user_menu_submit_location')}
-                </Link>
-                <button
-                  onClick={async () => { await supabase.auth.signOut(); setUser(null); setMobileOpen(false); }}
-                  className="text-left hover:text-[#7A5F5F] transition"
-                >
-                  {getText('logout_button')}
-                </button>
-              </>
-            ) : (
-              <Link href="/register" onClick={() => setMobileOpen(false)} className="hover:text-[#7A5F5F] transition">
-                {getText('auth_login_button')}
-              </Link>
+            {error && (
+              <div className="text-red-500 text-xs">
+                {error === 'Invalid login credentials'
+                  ? getText('auth_error_invalid_credentials')
+                  : error === 'User not found'
+                  ? getText('auth_error_user_not_found')
+                  : error === 'Email not confirmed'
+                  ? getText('auth_error_email_not_confirmed')
+                  : error}
+              </div>
             )}
 
-            {/* language selector in drawer */}
-            <div className="pt-6 border-t border-[#E7D8D1]">
-            <span className="block mb-3 text-sm text-[#7A5F5F] opacity-80">
-  🌐 {lang === 'zh-Hant' ? 'Select Language' : '語言'}
-</span>             {languages.map(l => (
-                <button
-                  key={l.code}
-                  onClick={() => { setLang(l.code as 'zh-Hant' | 'en'); }}
-                  className={`w-full text-left py-2 text-base hover:text-[#7A5F5F] transition ${lang === l.code ? 'font-semibold' : ''}`}
-                >
-                  {l.label}
-                </button>
-              ))}
-            </div>
-          </nav>
+            <button
+              type="submit"
+              disabled={loginLoading}
+              className="w-full py-2 mt-1 text-sm rounded bg-[#574964] hover:bg-[#9F8383] text-white transition flex justify-center items-center"
+            >
+              {loginLoading ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                getText('auth_login_button')
+              )}
+            </button>
+
+            <Link
+              href="/forgot"
+              className="text-xs underline hover:text-[#9F8383] transition text-center"
+            >
+              {getText('auth_forgot')}
+            </Link>
+
+            <Link
+              href="/register"
+              className="text-xs underline hover:text-[#9F8383] transition text-center"
+            >
+              {getText('auth_register_button')}
+            </Link>
+          </form>
         </div>
       )}
     </header>

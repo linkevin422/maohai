@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
 import { useText } from '@/lib/getText';
 
 const bannedWords = ['nigger', 'fag', 'faggot', 'fuck', 'shit'];
@@ -10,9 +11,24 @@ const bannedWords = ['nigger', 'fag', 'faggot', 'fuck', 'shit'];
 export default function RegisterPage() {
   const { getText } = useText();
   const supabase = createClientComponentClient();
+  const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+
+  // ────────────────── redirect if logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        router.replace('/');
+      } else {
+        setMounted(true);
+      }
+    };
+    checkUser();
+  }, [router, supabase]);
 
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');

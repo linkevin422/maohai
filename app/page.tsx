@@ -24,7 +24,9 @@ export default function HomePage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.4, ease: 'easeOut' }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
+          {/* Go-to-Map */}
           <Link
             href="/map"
             className="inline-block px-8 py-3 rounded-full bg-[#574964] hover:bg-[#9F8383] text-white text-sm sm:text-base tracking-wide transition shadow-md"
@@ -32,11 +34,19 @@ export default function HomePage() {
             {getText('home_goto_map_button')}
           </Link>
 
-          {/* subtle login note */}
-         <p className="mt-3 text-xs sm:text-sm text-[#574964]/80 italic">
-            {getText('home_login_note')}
-          </p>
+          {/* Register */}
+          <Link
+            href="/register"
+            className="inline-block px-8 py-3 rounded-full border-2 border-[#574964] text-[#574964] hover:bg-[#574964] hover:text-white text-sm sm:text-base tracking-wide transition shadow-md"
+          >
+            {getText('home_register_button')}
+          </Link>
         </motion.div>
+
+        {/* subtle login note */}
+        <p className="mt-3 text-xs sm:text-sm text-[#574964]/80 italic">
+          {getText('home_login_note')}
+        </p>
       </motion.div>
 
       {/* --- Updates Section --- */}

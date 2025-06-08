@@ -3,8 +3,7 @@
 import { useText } from '@/lib/getText';
 import { useLanguage } from '@/lib/LanguageProvider';
 import { motion } from 'framer-motion';
-import { Sparkles, Instagram } from 'lucide-react';
-import Link from 'next/link';
+import { Sparkles } from 'lucide-react';
 
 export default function AboutPage() {
   const { getText } = useText();
@@ -28,20 +27,11 @@ export default function AboutPage() {
         <p className="leading-relaxed text-[17px] sm:text-lg">{getText('about_4')}</p>
         <p className="leading-relaxed text-[17px] sm:text-lg">{getText('about_5')}</p>
 
-        <div className="border-t border-[#C8AAAA] pt-4 flex flex-col gap-2 text-sm text-[#9F8383] mt-6">
+        <div className="border-t border-[#C8AAAA] pt-4 text-sm text-[#9F8383] mt-6">
           <p className="flex items-center gap-2">
             <Sparkles size={16} className="text-[#C8AAAA]" />
-            {getText('about_6')}
+            {getText('footer_thanks_support')}
           </p>
-          <Link
-            href="https://www.instagram.com/linkmusicnow"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 hover:underline"
-          >
-            <Instagram size={16} />
-            instagram.com/linkmusicnow
-          </Link>
         </div>
       </motion.section>
     </main>
