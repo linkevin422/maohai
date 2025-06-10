@@ -172,30 +172,65 @@ export default function Header() {
   </div>
 </div>
 
-      {mobileMenuOpen && (
-        <div className="sm:hidden flex flex-col gap-2 px-4 pb-4 text-sm font-medium">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-[#7A5F5F] transition">
-              {getText(link.key)}
-            </Link>
-          ))}
+{mobileMenuOpen && (
+  <div className="sm:hidden flex flex-col items-center text-center space-y-3 px-4 pb-6 text-sm font-medium">
+    {navLinks.map((link) => (
+      <Link
+        key={link.href}
+        href={link.href}
+        className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+      >
+        {getText(link.key)}
+      </Link>
+    ))}
 
-          {!user ? (
-            <button onClick={() => setLoginOpen(true)} className="hover:text-[#7A5F5F] transition">
-              {getText('auth_login_button')}
-            </button>
-          ) : (
-            <>
-              <Link href="/mapsubmit" className="hover:text-[#7A5F5F] transition">
-                {getText('user_menu_submit_location')}
-              </Link>
-              <button onClick={handleLogout} className="hover:text-[#7A5F5F] transition">
-                {getText('logout_button')}
-              </button>
-            </>
-          )}
-        </div>
-      )}
+    {!user ? (
+      <button
+        onClick={() => setLoginOpen(true)}
+        className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+      >
+        {getText('auth_login_button')}
+      </button>
+    ) : (
+      <>
+        <Link
+          href="/mapsubmit"
+          className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+        >
+          {getText('user_menu_submit_location')}
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+        >
+          {getText('logout_button')}
+        </button>
+      </>
+    )}
+
+    {/* Language Selector */}
+    <div className="w-full">
+      <div
+        className="flex justify-center gap-4 mt-2 border-t border-[#C8AAAA] pt-4"
+        ref={languageRef}
+      >
+        {languages.map((l) => (
+          <button
+            key={l.code}
+            onClick={() => setLang(l.code as 'en' | 'zh-Hant')}
+            className={`px-3 py-1.5 rounded border text-sm transition ${
+              l.code === lang
+                ? 'bg-[#FFDAB3] border-[#574964] text-[#574964]'
+                : 'border-[#C8AAAA] hover:border-[#574964] text-[#574964]'
+            }`}
+          >
+            {l.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
 
       {loginOpen && (
         <div

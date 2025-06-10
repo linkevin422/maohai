@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useText } from '@/lib/getText';
 import EmailModal from './EmailModal';
+import { Instagram, Facebook } from 'lucide-react';
 
 export default function Footer() {
   const { getText } = useText();
@@ -13,7 +14,7 @@ export default function Footer() {
     <>
       <footer className="w-full bg-[#FFF6EF] text-[#574964] text-xs border-t border-[#C8AAAA]/50 py-6">
         <div className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-4 text-center">
-
+          
           {/* copyright */}
           <span className="opacity-60">{getText('footer_copyright')}</span>
 
@@ -31,6 +32,26 @@ export default function Footer() {
             <Link href="/contact" className="hover:underline">
               {getText('footer_contact')}
             </Link>
+          </div>
+
+          {/* social icons */}
+          <div className="flex gap-5 items-center justify-center mt-2 opacity-70">
+            <a
+              href="https://www.instagram.com/maohai.tw"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-100 transition"
+            >
+              <Instagram size={20} strokeWidth={1.5} />
+            </a>
+            <a
+              href="https://www.facebook.com/share/g/16jYwXbBhv/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-100 transition"
+            >
+              <Facebook size={20} strokeWidth={1.5} />
+            </a>
           </div>
 
           {/* subscribe */}

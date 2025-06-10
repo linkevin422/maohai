@@ -66,7 +66,7 @@ export const translations: Record<string, { en: string; 'zh-Hant': string }> = {
   },
   
   header_forum: {
-    'zh-Hant': '毛孩講',
+    'zh-Hant': '毛毛語',
     en: 'Forum',
   },
   
@@ -1273,7 +1273,7 @@ collapse_replies_btn: { en: 'Hide replies', 'zh-Hant': '隱藏回覆' },
 
 forum_title: {
   en: 'Maohai Forum',
-  'zh-Hant': '毛孩講'
+  'zh-Hant': '毛毛語'
 },
 
 //contact
