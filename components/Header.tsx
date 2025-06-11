@@ -7,6 +7,7 @@ import { ChevronDown, Menu, X, Globe } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { User } from '@supabase/supabase-js';
+import BellMenu from '@/components/Bell';
 
 export default function Header() {
   const { lang, setLang } = useLanguage();
@@ -88,149 +89,144 @@ export default function Header() {
 
   return (
     <header className="w-full bg-[#FFF6EF] text-[#3A2B2B] border-b border-[#E7D8D1] z-50">
-<div className="w-full px-4 py-4 relative flex items-center justify-between">
-  {/* Left: Logo */}
-  <Link href="/" className="flex items-baseline gap-1 group hover:opacity-90 transition">
-    <span className="text-3xl font-bold calligraphy">毛孩</span>
-    <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-[#7A5F5F] group-hover:text-[#574964] transition">
-      maohai.tw
-    </span>
-  </Link>
+      <div className="w-full px-4 py-4 relative flex items-center justify-between">
+        <Link href="/" className="flex items-baseline gap-1 group hover:opacity-90 transition">
+          <span className="text-3xl font-bold calligraphy">毛孩</span>
+          <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-[#7A5F5F] group-hover:text-[#574964] transition">
+            maohai.tw
+          </span>
+        </Link>
 
-  {/* Mobile Menu Button */}
-  <div className="sm:hidden">
-    <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-      {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-    </button>
-  </div>
-
-  {/* Center: Nav links */}
-  <nav className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center gap-5 text-sm font-medium">
-    {navLinks.map((link) => (
-      <Link key={link.href} href={link.href} className="hover:text-[#7A5F5F] transition">
-        {getText(link.key)}
-      </Link>
-    ))}
-  </nav>
-
-  {/* Right: Login + Language */}
-  <div className="hidden sm:flex items-center gap-4">
-    {!user ? (
-      <button onClick={() => setLoginOpen(!loginOpen)} className="hover:text-[#7A5F5F] transition">
-        {getText('auth_login_button')}
-      </button>
-    ) : (
-      <div className="relative" ref={userMenuRef}>
-        <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="hover:text-[#7A5F5F] transition flex items-center gap-2">
-          <span className="font-semibold">{username || 'User'}</span>
-          <ChevronDown size={14} />
-        </button>
-        {userMenuOpen && (
-          <div className="absolute right-0 mt-2 w-40 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
-            <Link href="/mapsubmit" className="block w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition">
-              {getText('user_menu_submit_location')}
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition"
-            >
-              {getText('logout_button')}
-            </button>
-          </div>
-        )}
-      </div>
-    )}
-
-    <div className="relative" ref={languageRef}>
-      <button
-        onClick={() => setLanguageOpen(!languageOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#C8AAAA] bg-[#FFF6EF] hover:border-[#9F8383] transition"
-      >
-        <Globe size={16} />
-        <span>{languages.find((l) => l.code === lang)?.label}</span>
-        <ChevronDown size={14} />
-      </button>
-      {languageOpen && (
-        <div className="absolute right-0 mt-2 w-32 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
-          {languages.map((l) => (
-            <button
-              key={l.code}
-              onClick={() => {
-                setLang(l.code as 'en' | 'zh-Hant');
-                setLanguageOpen(false);
-              }}
-              className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FFDAB3] transition ${
-                l.code === lang ? 'bg-[#FFDAB3]' : ''
-              }`}
-            >
-              {l.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  </div>
+        <div className="sm:hidden flex items-center gap-3">
+  {user && <BellMenu />}                         {/* bell now visible on mobile */}
+  <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+  </button>
 </div>
 
-{mobileMenuOpen && (
-  <div className="sm:hidden flex flex-col items-center text-center space-y-3 px-4 pb-6 text-sm font-medium">
-    {navLinks.map((link) => (
-      <Link
-        key={link.href}
-        href={link.href}
-        className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
-      >
-        {getText(link.key)}
-      </Link>
-    ))}
+        <nav className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center gap-5 text-sm font-medium">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-[#7A5F5F] transition">
+              {getText(link.key)}
+            </Link>
+          ))}
+        </nav>
 
-    {!user ? (
-      <button
-        onClick={() => setLoginOpen(true)}
-        className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
-      >
-        {getText('auth_login_button')}
-      </button>
-    ) : (
-      <>
-        <Link
-          href="/mapsubmit"
-          className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
-        >
-          {getText('user_menu_submit_location')}
-        </Link>
-        <button
-          onClick={handleLogout}
-          className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
-        >
-          {getText('logout_button')}
-        </button>
-      </>
-    )}
+        <div className="hidden sm:flex items-center gap-4">
+          {!user ? (
+            <button onClick={() => setLoginOpen(!loginOpen)} className="hover:text-[#7A5F5F] transition">
+              {getText('auth_login_button')}
+            </button>
+          ) : (
+            <div className="relative" ref={userMenuRef}>
+              <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="hover:text-[#7A5F5F] transition flex items-center gap-2">
+                <span className="font-semibold">{username || 'User'}</span>
+                <ChevronDown size={14} />
+              </button>
+              {userMenuOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
+                  <Link href="/mapsubmit" className="block w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition">
+                    {getText('user_menu_submit_location')}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#FFDAB3] transition"
+                  >
+                    {getText('logout_button')}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
-    {/* Language Selector */}
-    <div className="w-full">
-      <div
-        className="flex justify-center gap-4 mt-2 border-t border-[#C8AAAA] pt-4"
-        ref={languageRef}
-      >
-        {languages.map((l) => (
-          <button
-            key={l.code}
-            onClick={() => setLang(l.code as 'en' | 'zh-Hant')}
-            className={`px-3 py-1.5 rounded border text-sm transition ${
-              l.code === lang
-                ? 'bg-[#FFDAB3] border-[#574964] text-[#574964]'
-                : 'border-[#C8AAAA] hover:border-[#574964] text-[#574964]'
-            }`}
-          >
-            {l.label}
-          </button>
-        ))}
+          {user && <BellMenu />}
+
+          <div className="relative" ref={languageRef}>
+            <button
+              onClick={() => setLanguageOpen(!languageOpen)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#C8AAAA] bg-[#FFF6EF] hover:border-[#9F8383] transition"
+            >
+              <Globe size={16} />
+              <span>{languages.find((l) => l.code === lang)?.label}</span>
+              <ChevronDown size={14} />
+            </button>
+            {languageOpen && (
+              <div className="absolute right-0 mt-2 w-32 bg-[#FFF6EF] border border-[#C8AAAA] rounded-md shadow-xl overflow-hidden z-50">
+                {languages.map((l) => (
+                  <button
+                    key={l.code}
+                    onClick={() => {
+                      setLang(l.code as 'en' | 'zh-Hant');
+                      setLanguageOpen(false);
+                    }}
+                    className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FFDAB3] transition ${
+                      l.code === lang ? 'bg-[#FFDAB3]' : ''
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-)}
+
+      {mobileMenuOpen && (
+        <div className="sm:hidden flex flex-col items-center text-center space-y-3 px-4 pb-6 text-sm font-medium">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+            >
+              {getText(link.key)}
+            </Link>
+          ))}
+
+          {!user ? (
+            <button
+              onClick={() => setLoginOpen(true)}
+              className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+            >
+              {getText('auth_login_button')}
+            </button>
+          ) : (
+            <>
+              <Link
+                href="/mapsubmit"
+                className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+              >
+                {getText('user_menu_submit_location')}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full py-3 px-4 rounded hover:text-[#7A5F5F] transition"
+              >
+                {getText('logout_button')}
+              </button>
+            </>
+          )}
+
+          <div className="w-full">
+            <div className="flex justify-center gap-4 mt-2 border-t border-[#C8AAAA] pt-4" ref={languageRef}>
+              {languages.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => setLang(l.code as 'en' | 'zh-Hant')}
+                  className={`px-3 py-1.5 rounded border text-sm transition ${
+                    l.code === lang
+                      ? 'bg-[#FFDAB3] border-[#574964] text-[#574964]'
+                      : 'border-[#C8AAAA] hover:border-[#574964] text-[#574964]'
+                  }`}
+                >
+                  {l.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {loginOpen && (
         <div

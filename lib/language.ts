@@ -1353,6 +1353,29 @@ contact_error: {
   'zh-Hant': '出了點問題，請再試一次。',
 },
 
+//notification
+
+notif_comment: {
+  en: 'commented on your post',
+  'zh-Hant': '在你的貼文留言'
+},
+
+notif_loading: {
+  en: 'Loading…',
+  'zh-Hant': '載入中…'
+},
+notif_none: {
+  en: 'No notifications',
+  'zh-Hant': '沒有通知'
+},
+notif_upvote: {
+  en: 'upvoted your post/comment',
+  'zh-Hant': '為你的貼文／留言點讚'
+},
+notif_reply: {
+  en: 'replied to your comment',
+  'zh-Hant': '回覆了你的留言'
+},
 
 
 };
