@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import Image from 'next/image';
-import { Share } from 'lucide-react'; // uses Lucide share icon
+import { Share } from 'lucide-react';
 
 interface ShareBarProps {
   slug: string;
@@ -45,17 +45,6 @@ export default function ShareBar({ slug }: ShareBarProps) {
         className="flex items-center justify-center w-8 h-8 bg-blue-100 hover:bg-blue-200 rounded-md"
       >
         <Image src="/facebook.png" alt="Facebook" width={20} height={20} />
-      </a>
-
-      {/* Threads */}
-      <a
-        href="https://www.threads.net/"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Threads"
-        className="flex items-center justify-center w-8 h-8 bg-pink-100 hover:bg-pink-200 rounded-md"
-      >
-        <Image src="/threads.png" alt="Threads" width={20} height={20} />
       </a>
 
       {/* Copy */}
