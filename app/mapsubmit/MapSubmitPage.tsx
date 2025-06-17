@@ -226,6 +226,9 @@ export default function MapSubmitPage() {
     <h1 className="text-xl sm:text-2xl font-bold text-[#574964]">
       {getText('mapsubmit_title')}
     </h1>
+    <p className="text-sm text-red-500 leading-relaxed">
+  {getText('mapsubmit_mobile_warning')}
+</p>
 
     <div className="space-y-4">
       <label className="block text-sm text-[#574964]">{getText('mapsubmit_url')}</label>

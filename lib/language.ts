@@ -592,11 +592,15 @@ mapsubmit_success: {
 
   // mapsubmit batch
 
-
+  mapsubmit_mobile_warning: {
+    'zh-Hant': '※ 請使用電腦版 Google 地圖提交，手機上複製的短網址無法正確擷取位置與店名。',
+    en: '※ Please submit using Google Maps on desktop — links copied from mobile are often shortened and won’t extract name or coordinates correctly.',
+  },
   
+
   mapsubmit_invalid_url: {
-    en: "Only Google Maps links are allowed",
-    "zh-Hant": "只能輸入 Google 地圖連結",
+    en: "Please make sure the URL starts with：www.google.com/maps/place/...",
+    "zh-Hant": "請先確定開頭是：www.google.com/maps/place/...",
   },
   
   field_url: {
