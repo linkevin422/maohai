@@ -90,19 +90,30 @@ export default function Header() {
   return (
     <header className="w-full bg-[#FFF6EF] text-[#3A2B2B] border-b border-[#E7D8D1] z-50">
       <div className="w-full px-4 py-4 relative flex items-center justify-between">
-        <Link href="/" className="flex items-baseline gap-1 group hover:opacity-90 transition">
-          <span className="text-3xl font-bold calligraphy">毛孩</span>
-          <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-[#7A5F5F] group-hover:text-[#574964] transition">
-            maohai.tw
-          </span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-baseline gap-1 group hover:opacity-90 transition">
+            <span className="text-3xl font-bold calligraphy">毛孩</span>
+            <span className="text-[10px] font-light tracking-widest translate-y-[2px] text-[#7A5F5F] group-hover:text-[#574964] transition">
+              maohai.tw
+            </span>
+          </Link>
+
+          <Link
+            href="https://join.gov.tw/idea/detail/9aa7743b-3f11-46d8-95a9-9f750794cf54"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center px-2 py-0.5 rounded-md bg-[#FFDAB3] text-[10px] sm:text-xs text-[#574964] hover:bg-[#FFC89E] transition"
+          >
+            犬貓醫療改革提案
+          </Link>
+        </div>
 
         <div className="sm:hidden flex items-center gap-3">
-  {user && <BellMenu />}                         {/* bell now visible on mobile */}
-  <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-  </button>
-</div>
+          {user && <BellMenu />}
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
 
         <nav className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center gap-5 text-sm font-medium">
           {navLinks.map((link) => (
