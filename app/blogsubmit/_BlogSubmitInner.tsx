@@ -179,69 +179,76 @@ export default function BlogSubmitPage() {
     setTagList((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async () => {
-    if (!title || !editor?.getHTML() || !coverUrl || !coverPublicId) {
-      alert('缺少欄位');
-      return;
-    }
+// 💡 replace the entire handleSubmit function with this
+const handleSubmit = async () => {
+  if (!title || !editor?.getHTML() || !coverUrl || !coverPublicId) {
+    alert('缺少欄位');
+    return;
+  }
 
-    setSubmitting(true);
+  setSubmitting(true);
 
-    const content = editor.getHTML();
-    const slug = generatedSlug || slugify(title, { lower: true, strict: false, remove: undefined });
-    const { data: userData } = await supabase.auth.getUser();
-    const user_id = userData.user?.id || null;
-    const username = userData.user?.user_metadata?.username || '';
+  const content = editor.getHTML();
+  const { data: userData } = await supabase.auth.getUser();
+  const user_id = userData.user?.id || null;
+  const username = userData.user?.user_metadata?.username || '';
 
-    const readingTime = Math.ceil(
-      content.replace(/<[^>]+>/g, '').split(/\s+/).length / 200
-    );
+  const readingTime = Math.ceil(
+    content.replace(/<[^>]+>/g, '').split(/\s+/).length / 200
+  );
 
-    const postData = {
-      title,
-      content,
-      cover_image_url: coverUrl,
-      image_public_id: coverPublicId,
-      slug,
-      category,
-      tags: tagList,
-      excerpt: content.replace(/<[^>]+>/g, '').slice(0, 160),
-      user_id,
-      username,
-      pinned,
-      reading_time: readingTime,
-      thumbnail_alt: thumbnailAlt,
-      language,
-    };
-    
-    let result;
-    if (editingId) {
-      result = await supabase.from('blogs').update(postData).eq('id', editingId);
-    } else {
-      result = await supabase.from('blogs').insert({ ...postData, likes: 0 });
-    }
-        
-    if (result.error) {
-      alert('儲存失敗');
-      setSubmitting(false);
-      return;
-    }    
-
-    // 🧹 Cleanup orphaned images
-    const newInsertedIds = extractImageIds(content);
-    const toDelete = oldInsertedImageIds.filter(id => !newInsertedIds.includes(id));
-    for (const id of toDelete) {
-      await deleteFromCloudinary(id);
-    }
-
-    if (oldCoverPublicId && oldCoverPublicId !== coverPublicId) {
-      await deleteFromCloudinary(oldCoverPublicId);
-    }
-
-    setSubmitting(false);
-    alert('已儲存！');
-    router.push('/blogadmin');
+  // common fields (always saved)
+  const baseData = {
+    title,
+    content,
+    cover_image_url: coverUrl,
+    image_public_id: coverPublicId,
+    category,
+    tags: tagList,
+    excerpt: content.replace(/<[^>]+>/g, '').slice(0, 160),
+    user_id,
+    username,
+    pinned,
+    reading_time: readingTime,
+    thumbnail_alt: thumbnailAlt,
+    language,
   };
+
+  let result;
+
+  if (editingId) {
+    // 👉 UPDATE: keep the existing slug, so don’t include it here
+    result = await supabase
+      .from('blogs')
+      .update(baseData)
+      .eq('id', editingId);
+  } else {
+    // 👉 INSERT: must generate a fresh, unique slug
+    const rawSlug = customSlug(title) || slugify(title, { lower: true });
+    const uniqueSlug = await generateUniqueSlug(rawSlug || Date.now().toString());
+    result = await supabase
+      .from('blogs')
+      .insert({ ...baseData, slug: uniqueSlug, likes: 0 });
+  }
+
+  if (result.error) {
+    alert(`儲存失敗：${result.error.message}`);
+    setSubmitting(false);
+    return;
+  }
+
+  /* --------- image-cleanup logic stays the same --------- */
+  const newInsertedIds = extractImageIds(content);
+  const toDelete = oldInsertedImageIds.filter(id => !newInsertedIds.includes(id));
+  for (const id of toDelete) await deleteFromCloudinary(id);
+  if (oldCoverPublicId && oldCoverPublicId !== coverPublicId)
+    await deleteFromCloudinary(oldCoverPublicId);
+  /* ------------------------------------------------------ */
+
+  setSubmitting(false);
+  alert('已儲存！');
+  router.push('/blogadmin');
+};
 
   if (!authChecked) return <p className="p-6 text-center text-gray-700">正在驗證身份…</p>;
   if (!admins.includes(userName || '')) return <p className="p-6 text-center text-red-600">你沒有權限喔</p>;
